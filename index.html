@@ -3,153 +3,116 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>STS – Spot the Signs</title>
-
+  <title>STS — Spot The Signs</title>
   <style>
-    body {
-      font-family: system-ui, Arial, sans-serif;
-      margin: 0;
-      background: #f6f7f9;
-      color: #111;
+    :root { --bg:#0b1220; --card:#121a2b; --text:#e9eefc; --muted:#a9b5d6; --acc:#5dd6c3; --warn:#ffcc66; --danger:#ff6b6b; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:linear-gradient(180deg,#070b14, var(--bg)); color:var(--text); }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
+    .card { background:rgba(18,26,43,.92); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:18px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    h2 { margin: 18px 0 10px; font-size: 20px; }
+    p { color: var(--muted); line-height:1.5; margin: 10px 0; }
+    .row { display:flex; gap:12px; flex-wrap:wrap; }
+    .btn {
+      appearance:none; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06);
+      color:var(--text); padding:12px 14px; border-radius:14px; cursor:pointer;
+      font-weight:600; transition:.15s transform, .15s background, .15s border;
     }
-    .wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 24px;
+    .btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.22); background: rgba(255,255,255,.10); }
+    .btn.primary { background: rgba(93,214,195,.14); border-color: rgba(93,214,195,.45); }
+    .btn.danger { background: rgba(255,107,107,.14); border-color: rgba(255,107,107,.5); }
+    .pill { display:inline-block; padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px; }
+    .pill.warn { background: rgba(255,204,102,.14); border:1px solid rgba(255,204,102,.45); color: var(--warn); }
+    .pill.acc { background: rgba(93,214,195,.14); border:1px solid rgba(93,214,195,.45); color: var(--acc); }
+    .pill.danger { background: rgba(255,107,107,.14); border:1px solid rgba(255,107,107,.5); color: var(--danger); }
+    .hidden { display:none; }
+
+    .q { padding:12px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04); margin:10px 0; }
+    .qhead { display:flex; gap:10px; align-items:flex-start; }
+    .qnum { width:28px; height:28px; border-radius:10px; display:grid; place-items:center; background: rgba(255,255,255,.08); font-weight:800; flex:0 0 auto; }
+    .qtext { margin:0; color:var(--text); font-weight:600; }
+    .answers { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
+    .answers label {
+      cursor:pointer; user-select:none; padding:10px 12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.14);
+      display:inline-flex; gap:8px; align-items:center;
     }
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.06);
-      margin-bottom: 16px;
-    }
-    h1, h2 {
-      margin-top: 0;
-    }
-    .muted {
-      color: #555;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .question {
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      background: #fafafa;
-    }
-    .answers {
-      margin-top: 8px;
-      display: flex;
-      gap: 12px;
-    }
-    button {
-      border: none;
-      border-radius: 10px;
-      padding: 8px 14px;
-      cursor: pointer;
-      background: #111;
-      color: #fff;
-    }
-    button.secondary {
-      background: #e9ecef;
-      color: #111;
-    }
-    .hidden {
-      display: none;
-    }
-    .result {
-      border-left: 6px solid #111;
-      padding-left: 14px;
-    }
-    a {
-      color: #0b5ed7;
-    }
+    .answers input { accent-color: var(--acc); }
+    .summary { margin-top: 14px; padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.18); }
+    .scoreline { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .footer-note { margin-top: 14px; font-size: 13px; color: var(--muted); }
+    a { color: var(--acc); text-decoration:none; }
+    a:hover { text-decoration:underline; }
   </style>
 </head>
 
 <body>
-<div class="wrap">
+  <div class="wrap">
+    <div class="card">
+      <h1>STS — Spot The Signs</h1>
+      <p>
+        <span class="pill.warn">Belangrijk</span>
+        Deze vragenlijst is <b>geen diagnose</b>. Het helpt alleen om signalen te herkennen.
+        Als meerdere vragen met <b>JA</b> worden beantwoord, kan dat een teken zijn dat je hulp of advies kunt gebruiken.
+      </p>
+      <p>
+        Als je je onveilig voelt of er is direct gevaar: <b>bel 112</b>.
+        Je kunt ook contact opnemen met <b>Veilig Thuis</b>:
+        <a href="https://veiligthuis.nl" target="_blank" rel="noopener">veiligthuis.nl</a>
+      </p>
+    </div>
 
-  <div class="card">
-    <h1>STS – Spot the Signs</h1>
-    <p class="muted">
-      <strong>Belangrijk:</strong> Deze vragenlijst is geen diagnose.
-      De lijst helpt alleen om signalen te herkennen.
-      Als meerdere vragen met <strong>JA</strong> worden beantwoord,
-      kan dat een teken zijn dat extra steun of advies helpend kan zijn.
-    </p>
-    <p class="muted">
-      Bij direct gevaar: bel <strong>112</strong><br>
-      Of neem contact op met <a href="https://www.veiligthuis.nl" target="_blank">Veilig Thuis</a>
-    </p>
-  </div>
+    <div class="card" style="margin-top:14px;">
+      <h2>Start</h2>
+      <p>Kies wat bij jou past:</p>
+      <div class="row">
+        <button class="btn primary" type="button" id="btnVictim">Ik maak me zorgen over zijn/haar gedrag (slachtoffer)</button>
+        <button class="btn danger" type="button" id="btnPerp">Ik maak me zorgen over mijn gedrag (dader)</button>
+      </div>
+      <p class="footer-note">
+        Tip: je kunt altijd wisselen via de knoppen hieronder in de vragenlijst.
+      </p>
+    </div>
 
-  <div class="card" id="quiz">
-    <h2>Beantwoord de vragen (JA / NEE)</h2>
+    <!-- Slachtoffer -->
+    <div class="card hidden" id="sectionVictim" style="margin-top:14px;">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <h2 style="margin:0;">Vragenlijst — zorgen over zijn/haar gedrag</h2>
+        <div class="row">
+          <button class="btn" type="button" id="switchToPerp">Ga naar: zorgen over mijn gedrag</button>
+          <button class="btn" type="button" id="resetVictim">Reset antwoorden</button>
+        </div>
+      </div>
 
-    <!-- Vragen -->
-    <div class="question">
-      1. Probeert je (ex-)partner te bepalen waar je bent, wat je doet of met wie je omgaat?
-      <div class="answers">
-        <label><input type="radio" name="q1" value="1"> JA</label>
-        <label><input type="radio" name="q1" value="0"> NEE</label>
+      <p><b>Tekst:</b> beantwoord onderstaande vragen met <b>JA</b> / <b>NEE</b>.</p>
+
+      <div id="victimQuestions"></div>
+
+      <div class="summary" id="victimSummary">
+        <div class="scoreline">
+          <span class="pill acc">Score</span>
+          <b id="victimScore">0</b> JA-antwoorden
+        </div>
+        <p id="victimResult" style="margin-top:8px;"></p>
       </div>
     </div>
 
-    <div class="question">
-      2. Moet je vaak verantwoorden waar je was of waarom je ergens was?
-      <div class="answers">
-        <label><input type="radio" name="q2" value="1"> JA</label>
-        <label><input type="radio" name="q2" value="0"> NEE</label>
+    <!-- Dader -->
+    <div class="card hidden" id="sectionPerp" style="margin-top:14px;">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <h2 style="margin:0;">Vragenlijst — zorgen over mijn gedrag</h2>
+        <div class="row">
+          <button class="btn" type="button" id="switchToVictim">Ga naar: zorgen over zijn/haar gedrag</button>
+          <button class="btn" type="button" id="resetPerp">Reset antwoorden</button>
+        </div>
       </div>
-    </div>
 
-    <div class="question">
-      3. Wordt je partner boos of angstig als je buiten zijn controle bent?
-      <div class="answers">
-        <label><input type="radio" name="q3" value="1"> JA</label>
-        <label><input type="radio" name="q3" value="0"> NEE</label>
-      </div>
-    </div>
+      <p>Beantwoord eerlijk met <b>JA</b> of <b>NEE</b>. Deze lijst is bedoeld voor zelfinzicht — niet om je te veroordelen, maar om risico’s te herkennen.</p>
 
-    <button onclick="calculate()">Bekijk resultaat</button>
-  </div>
+      <div id="perpQuestions"></div>
 
-  <div class="card hidden" id="result">
-    <h2>Jouw resultaat</h2>
-    <div class="result" id="resultText"></div>
-  </div>
-
-</div>
-
-<script>
-  function calculate() {
-    let score = 0;
-    const answers = document.querySelectorAll('input[type="radio"]:checked');
-    answers.forEach(a => score += Number(a.value));
-
-    let text = `<p><strong>Aantal JA-antwoorden:</strong> ${score}</p>`;
-
-    if (score <= 4) {
-      text += `<p><strong>Laag risico</strong><br>
-      Wees alert op signalen. Eén rode vlag kan al belangrijk zijn.</p>`;
-    } else if (score <= 11) {
-      text += `<p><strong>Verhoogd risico</strong><br>
-      Meerdere signalen van controle of manipulatie. Overweeg om steun te zoeken.</p>`;
-    } else if (score <= 17) {
-      text += `<p><strong>Hoog risico</strong><br>
-      Duidelijke patronen van dwingende controle. Professioneel advies wordt aangeraden.</p>`;
-    } else {
-      text += `<p><strong>Acuut risico</strong><br>
-      Neem direct contact op met hulporganisaties of 112.</p>`;
-    }
-
-    document.getElementById('resultText').innerHTML = text;
-    document.getElementById('result').classList.remove('hidden');
-  }
-</script>
-
-</body>
-</html>
+      <div class="summary" id="perpSummary">
+        <div class="scoreline">
+          <span class="pill acc">Score</span>
+          <b id="perpScore">0</
