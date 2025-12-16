@@ -3,350 +3,205 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>STS — Spot The Signs</title>
+  <title>STS — Spot the Signs</title>
   <style>
-    :root { --bg:#0b1220; --card:#121a2b; --text:#e9eefc; --muted:#a9b5d6; --acc:#5dd6c3; --warn:#ffcc66; --danger:#ff6b6b; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:linear-gradient(180deg,#070b14, var(--bg)); color:var(--text); }
-    .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
-    .card { background:rgba(18,26,43,.92); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:18px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
-    h1 { margin: 0 0 8px; font-size: 28px; }
-    h2 { margin: 18px 0 10px; font-size: 20px; }
-    p { color: var(--muted); line-height:1.5; margin: 10px 0; }
-    .row { display:flex; gap:12px; flex-wrap:wrap; }
-    .btn {
-      appearance:none; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06);
-      color:var(--text); padding:12px 14px; border-radius:14px; cursor:pointer;
-      font-weight:600; transition:.15s transform, .15s background, .15s border;
+    :root{
+      --bg:#0b1220;
+      --card:#111a2e;
+      --muted:#a9b4d0;
+      --text:#eef2ff;
+      --accent:#7cdbff;
+      --danger:#ff6b6b;
+      --ok:#6ee7b7;
+      --warn:#fbbf24;
+      --border: rgba(255,255,255,.12);
+      --shadow: 0 10px 35px rgba(0,0,0,.35);
+      --radius: 16px;
     }
-    .btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.22); background: rgba(255,255,255,.10); }
-    .btn.primary { background: rgba(93,214,195,.14); border-color: rgba(93,214,195,.45); }
-    .btn.danger { background: rgba(255,107,107,.14); border-color: rgba(255,107,107,.5); }
-    .pill { display:inline-block; padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px; }
-    .pill.warn { background: rgba(255,204,102,.14); border:1px solid rgba(255,204,102,.45); color: var(--warn); }
-    .pill.acc { background: rgba(93,214,195,.14); border:1px solid rgba(93,214,195,.45); color: var(--acc); }
-    .pill.danger { background: rgba(255,107,107,.14); border:1px solid rgba(255,107,107,.5); color: var(--danger); }
-    .hidden { display:none; }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(124,219,255,.12), transparent),
+                  radial-gradient(900px 500px at 90% 20%, rgba(110,231,183,.10), transparent),
+                  var(--bg);
+      color: var(--text);
+      line-height:1.5;
+    }
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(11,18,32,.65);
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap{
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 14px 14px 36px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 10px 0;
+    }
+    .brand h1{
+      font-size: 18px;
+      margin:0;
+      letter-spacing:.3px;
+    }
+    .brand small{ color: var(--muted); }
 
-    .q { padding:12px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04); margin:10px 0; }
-    .qhead { display:flex; gap:10px; align-items:flex-start; }
-    .qnum { width:28px; height:28px; border-radius:10px; display:grid; place-items:center; background: rgba(255,255,255,.08); font-weight:800; flex:0 0 auto; }
-    .qtext { margin:0; color:var(--text); font-weight:600; }
-    .answers { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
-    .answers label {
-      cursor:pointer; user-select:none; padding:10px 12px; border-radius:12px;
-      border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.14);
-      display:inline-flex; gap:8px; align-items:center;
+    .card{
+      background: rgba(17,26,46,.92);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 12px 0;
     }
-    .answers input { accent-color: var(--acc); }
-    .summary { margin-top: 14px; padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.18); }
-    .scoreline { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    .footer-note { margin-top: 14px; font-size: 13px; color: var(--muted); }
-    a { color: var(--acc); text-decoration:none; }
-    a:hover { text-decoration:underline; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .row > *{ flex: 1 1 220px; }
+
+    .btn{
+      appearance:none;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight: 650;
+      cursor:pointer;
+      transition: transform .04s ease, background .15s ease, border-color .15s ease;
+      width:100%;
+      text-align:center;
+    }
+    .btn:hover{ background: rgba(255,255,255,.10); }
+    .btn:active{ transform: scale(.99); }
+    .btn.primary{
+      border-color: rgba(124,219,255,.45);
+      background: rgba(124,219,255,.14);
+    }
+    .btn.danger{
+      border-color: rgba(255,107,107,.5);
+      background: rgba(255,107,107,.12);
+    }
+
+    .note{
+      color: var(--muted);
+      font-size: 14px;
+      margin: 8px 0 0;
+    }
+    .alert{
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+    }
+    .alert strong{ color: var(--accent); }
+
+    .hidden{ display:none !important; }
+
+    h2{
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    h3{
+      margin: 18px 0 8px;
+      font-size: 16px;
+      color: #dbe6ff;
+    }
+    .q{
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin: 10px 0;
+      background: rgba(255,255,255,.03);
+    }
+    .q .qtext{
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .yn{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      flex:1 1 120px;
+      min-width: 120px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      border-radius: 999px;
+      padding: 10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill input{ width:18px; height:18px; }
+    .pill:has(input:checked){
+      border-color: rgba(124,219,255,.55);
+      background: rgba(124,219,255,.16);
+    }
+
+    .result{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+    .badge{
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      font-weight: 750;
+      min-width: 170px;
+      text-align:center;
+    }
+    .badge.low{ border-color: rgba(110,231,183,.45); background: rgba(110,231,183,.12); }
+    .badge.med{ border-color: rgba(251,191,36,.55); background: rgba(251,191,36,.12); }
+    .badge.high{ border-color: rgba(255,107,107,.55); background: rgba(255,107,107,.12); }
+    .badge.acute{ border-color: rgba(255,107,107,.75); background: rgba(255,107,107,.18); }
+
+    a{ color: var(--accent); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+
+    .footer-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    /* Mobile polish */
+    @media (max-width: 520px){
+      .brand h1{ font-size: 16px; }
+      .pill{ min-width: 46%; }
+    }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>STS — Spot The Signs</h1>
-      <p>
-        <span class="pill.warn">Belangrijk</span>
-        Deze vragenlijst is <b>geen diagnose</b>. Het helpt alleen om signalen te herkennen.
+  <header>
+    <div class="wrap brand">
+      <div>
+        <h1>STS — Spot the Signs</h1>
+        <small>Vragenlijst (schoolproject) — geen diagnose</small>
+      </div>
+      <button id="btnResetTop" class="btn" type="button" style="max-width:160px;">Opnieuw</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card alert">
+      <p style="margin:0;">
+        <strong>Belangrijk:</strong> Deze vragenlijst is <b>geen diagnose</b>. Het helpt alleen om signalen te herkennen.
         Als meerdere vragen met <b>JA</b> worden beantwoord, kan dat een teken zijn dat je hulp of advies kunt gebruiken.
       </p>
-      <p>
-        Als je je onveilig voelt of er is direct gevaar: <b>bel 112</b>.
-        Je kunt ook contact opnemen met <b>Veilig Thuis</b>:
-        <a href="https://veiligthuis.nl" target="_blank" rel="noopener">veiligthuis.nl</a>
-      </p>
-    </div>
-
-    <div class="card" style="margin-top:14px;">
-      <h2>Start</h2>
-      <p>Kies wat bij jou past:</p>
-      <div class="row">
-        <button class="btn primary" type="button" id="btnVictim">Ik maak me zorgen over zijn/haar gedrag (slachtoffer)</button>
-        <button class="btn danger" type="button" id="btnPerp">Ik maak me zorgen over mijn gedrag (dader)</button>
-      </div>
-      <p class="footer-note">
-        Tip: je kunt altijd wisselen via de knoppen hieronder in de vragenlijst.
-      </p>
-    </div>
-
-    <!-- Slachtoffer -->
-    <div class="card hidden" id="sectionVictim" style="margin-top:14px;">
-      <div class="row" style="justify-content:space-between; align-items:center;">
-        <h2 style="margin:0;">Vragenlijst — zorgen over zijn/haar gedrag</h2>
-        <div class="row">
-          <button class="btn" type="button" id="switchToPerp">Ga naar: zorgen over mijn gedrag</button>
-          <button class="btn" type="button" id="resetVictim">Reset antwoorden</button>
-        </div>
-      </div>
-
-      <p><b>Tekst:</b> beantwoord onderstaande vragen met <b>JA</b> / <b>NEE</b>.</p>
-
-      <div id="victimQuestions"></div>
-
-      <div class="summary" id="victimSummary">
-        <div class="scoreline">
-          <span class="pill acc">Score</span>
-          <b id="victimScore">0</b> JA-antwoorden
-        </div>
-        <p id="victimResult" style="margin-top:8px;"></p>
-      </div>
-    </div>
-
-    <!-- Dader -->
-    <div class="card hidden" id="sectionPerp" style="margin-top:14px;">
-      <div class="row" style="justify-content:space-between; align-items:center;">
-        <h2 style="margin:0;">Vragenlijst — zorgen over mijn gedrag</h2>
-        <div class="row">
-          <button class="btn" type="button" id="switchToVictim">Ga naar: zorgen over zijn/haar gedrag</button>
-          <button class="btn" type="button" id="resetPerp">Reset antwoorden</button>
-        </div>
-      </div>
-
-      <p>Beantwoord eerlijk met <b>JA</b> of <b>NEE</b>. Deze lijst is bedoeld voor zelfinzicht — niet om je te veroordelen, maar om risico’s te herkennen.</p>
-
-      <div id="perpQuestions"></div>
-
-      <div class="summary" id="perpSummary">
-        <div class="scoreline">
-          <span class="pill acc">Score</span>
-          <b id="perpScore">0</b> JA-antwoorden
-        </div>
-        <p id="perpResult" style="margin-top:8px;"></p>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // ---------- Data ----------
-    const victimList = [
-      // Categorie 1
-      "Probeert je (ex-)partner te bepalen waar je bent, wat je doet of met wie je omgaat?",
-      "Moet je vaak verantwoorden waar je was of waarom je ergens was?",
-      "Vraagt je (ex-)partner herhaaldelijk om je locatie ‘om te checken of je loyaal bent’?",
-      "Wordt je (ex-)partner boos of angstig als je buiten zijn/haar zicht of controle bent?",
-      // Categorie 2
-      "Probeert jouw (ex-)partner je contact met familie of vrienden te verminderen?",
-      "Zegt jouw (ex-)partner dat jouw vrienden of familie slecht voor je zijn of je negatief beïnvloeden?",
-      "Ben je minder sociaal geworden sinds jullie relatie?",
-      // Categorie 3
-      "Is je partner extreem jaloers zonder duidelijke reden?",
-      "Reageert hij/zij boos of gespannen als je aandacht aan anderen geeft?",
-      // Categorie 4
-      "Draait hij/zij situaties om zodat jij je schuldig voelt, ook als je niks verkeerd deed?",
-      "Twijfel je door hem/haar aan je eigen gevoel, gedachten of herinneringen?",
-      "Geeft hij/zij jou de schuld van zijn/haar woede, agressie of problemen?",
-      "Heb je het gevoel dat hij/zij je bewust manipuleert om je aan hem/haar te binden?",
-      // Categorie 5
-      "Gebruikt hij/zij emotionele chantage om z’n/haar zin te krijgen?",
-      "Dreigt hij/zij zichzelf, jou, anderen of (jullie) kinderen iets aan te doen als je bij hem/haar weggaat?",
-      "Heb je ooit het gevoel gehad dat hij/zij gevaarlijker wordt als jij grenzen aangeeft?",
-      // Categorie 6
-      "Wilde hij/zij al heel vroeg in de relatie grote stappen (samenwonen, trouwen, kinderen)?",
-      "Voelde de relatie in het begin te snel?",
-      "Gebruikt hij/zij gedeelde verplichtingen (kinderen, huis, geld) om je bij hem/haar te houden?",
-      // Categorie 7
-      "Ben je bang voor zijn/haar reactie, zelfs bij kleine dingen?",
-      "Vernedert, kleineert of intimideert hij/zij je verbaal of fysiek?",
-      "Wordt zijn/haar boosheid in de loop van de tijd erger?",
-      // Categorie 8
-      "Checkt hij/zij jouw telefoon, berichten of accounts regelmatig zonder jouw toestemming?",
-      "Heb je het gevoel dat je geen eigen privacy, ruimte of autonomie meer hebt?"
-    ];
-
-    const perpList = [
-      // 1. Controle & grenzen
-      "Probeer je te bepalen waar je partner is, wat ze doet of met wie ze contact heeft?",
-      "Verwacht je dat zij altijd opneemt, terugbelt of antwoordt wanneer jij dat wilt?",
-      "Word je boos of onrustig als je niet weet waar ze is of met wie ze is?",
-      "Vraag je haar vaak om haar locatie te delen?",
-      // 2. Jaloezie & bezit
-      "Voel je jaloezie als ze tijd doorbrengt met vrienden, familie of collega’s?",
-      "Denk je snel dat ze niet loyaal is, zelfs als daar geen bewijs voor is?",
-      "Heb je moeite als ze aandacht aan andere mensen geeft?",
-      // 3. Manipulatie & emotionele druk
-      "Geef je haar het gevoel dat iets haar schuld is, ook als jij boos werd?",
-      "Leg je problemen van de relatie vaak bij haar neer?",
-      "Heb je haar wel eens verward of laten twijfelen aan zichzelf (gaslighting)?",
-      "Maak je gebruik van schuldgevoelens om je zin te krijgen?",
-      // 4. Intimidatie & boosheid
-      "Word je snel boos, agressief of intimiderend in discussies?",
-      "Heb je ooit geschreeuwd, vernederd of bedreigd in een ruzie?",
-      "Heb je dingen kapotgemaakt of gegooid om een punt te maken?",
-      "Ben je bang dat je boosheid kan escaleren?",
-      // 5. Isolatie
-      "Heb je haar afgeraden om met bepaalde mensen om te gaan?",
-      "Vind je dat familie of vrienden haar negatief beïnvloeden?",
-      "Heb je geprobeerd haar contact met anderen te beperken?",
-      // 6. Lovebombing & snelle binding
-      "Heb je in het begin van de relatie snel grote stappen gezet (samenwonen, trouwen, kinderen)?",
-      "Had je hierbij de behoefte haar stevig aan je te binden?",
-      "Gebruik je gedeelde verplichtingen soms om haar bij je te houden?",
-      // 7. Dreiging & chantage
-      "Heb je ooit gedreigd jezelf, haar of iemand anders iets aan te doen?",
-      "Heb je woorden gebruikt als: “Als jij weggaat, dan…”?",
-      "Heb je haar ooit bang gemaakt zodat ze zou doen wat jij wilde?",
-      // 8. Privacy & controle
-      "Controleer je haar telefoon, berichten of accounts?",
-      "Heb je ooit een wachtwoord gevraagd of afgedwongen?",
-      "Vind je dat je het recht hebt om alles van haar te weten?"
-    ];
-
-    // ---------- Helpers ----------
-    function buildQuestions(container, keyPrefix, questions, onChange) {
-      container.innerHTML = "";
-      questions.forEach((text, idx) => {
-        const n = idx + 1;
-        const idYes = `${keyPrefix}_${n}_yes`;
-        const idNo  = `${keyPrefix}_${n}_no`;
-
-        const div = document.createElement("div");
-        div.className = "q";
-
-        div.innerHTML = `
-          <div class="qhead">
-            <div class="qnum">${n}</div>
-            <p class="qtext">${text}</p>
-          </div>
-          <div class="answers">
-            <label>
-              <input type="radio" name="${keyPrefix}_${n}" id="${idYes}" value="yes">
-              JA
-            </label>
-            <label>
-              <input type="radio" name="${keyPrefix}_${n}" id="${idNo}" value="no">
-              NEE
-            </label>
-          </div>
-        `;
-
-        // Belangrijk: geen scroll/submit; alleen change-event.
-        div.addEventListener("change", (e) => {
-          if (e.target && e.target.matches('input[type="radio"]')) {
-            onChange();
-          }
-        });
-
-        container.appendChild(div);
-      });
-    }
-
-    function countYes(keyPrefix, total) {
-      let yes = 0;
-      for (let i = 1; i <= total; i++) {
-        const sel = document.querySelector(`input[name="${keyPrefix}_${i}"][value="yes"]`);
-        if (sel && sel.checked) yes++;
-      }
-      return yes;
-    }
-
-    function resultText(score) {
-      if (score <= 4) {
-        return `<span class="pill acc">0–4: laag</span><br>
-        Deze score betekent dat er voorzichtigheid nodig is, maar er zijn op dit moment geen sterke patronen van dwingende controle.
-        <br><br><b>Let op:</b> één enkele rode vlag kan al schadelijk zijn. Neem signalen serieus en kom bij twijfel vroeg in actie.
-        <br><br><b>Advies:</b> let op veranderingen of nieuwe signalen, en zoek steun bij iemand die je vertrouwt.`;
-      }
-      if (score <= 11) {
-        return `<span class="pill.warn">5–11: verhoogd risico</span><br>
-        Dit wijst op meerdere signalen van manipulatie, psychische druk, controle of isolatie.
-        <br><br><b>Advies:</b> praat met een professional/ervaringsdeskundige, verken wat je nodig hebt om weer grip te krijgen,
-        en informeer jezelf over patronen van dwingende controle.`;
-      }
-      if (score <= 17) {
-        return `<span class="pill.warn">12–17: hoog risico</span><br>
-        Er zijn duidelijke patronen die lijken op intieme terreur of dwingende controle. Dit risico kan toenemen.
-        <br><br><b>Advies:</b> raadpleeg een professional, neem contact op met organisaties die gespecialiseerd zijn in partnergeweld,
-        en kijk naar een veiligheidsplan als je je onveilig voelt.`;
-      }
-      return `<span class="pill.danger">18+: acuut / zeer hoog risico</span><br>
-      Dit is een alarmerende score. De combinatie van controle, dreiging, isolatie en manipulatie is een ernstig gevaarssignaal.
-      <br><br><b>Advies:</b> zoek direct (desnoods anoniem) contact met een hulporganisatie, deel je zorgen met iemand die je vertrouwt,
-      en bij dreiging: wacht niet (bel 112).`;
-    }
-
-    function resetAnswers(keyPrefix, total) {
-      for (let i = 1; i <= total; i++) {
-        const radios = document.querySelectorAll(`input[name="${keyPrefix}_${i}"]`);
-        radios.forEach(r => r.checked = false);
-      }
-    }
-
-    // ---------- UI wiring ----------
-    const btnVictim = document.getElementById("btnVictim");
-    const btnPerp = document.getElementById("btnPerp");
-
-    const sectionVictim = document.getElementById("sectionVictim");
-    const sectionPerp = document.getElementById("sectionPerp");
-
-    const victimQuestionsEl = document.getElementById("victimQuestions");
-    const perpQuestionsEl = document.getElementById("perpQuestions");
-
-    const victimScoreEl = document.getElementById("victimScore");
-    const perpScoreEl = document.getElementById("perpScore");
-
-    const victimResultEl = document.getElementById("victimResult");
-    const perpResultEl = document.getElementById("perpResult");
-
-    function showVictim() {
-      sectionPerp.classList.add("hidden");
-      sectionVictim.classList.remove("hidden");
-      // GEEN scroll-to-top!
-    }
-
-    function showPerp() {
-      sectionVictim.classList.add("hidden");
-      sectionPerp.classList.remove("hidden");
-      // GEEN scroll-to-top!
-    }
-
-    function updateVictim() {
-      const score = countYes("victim", victimList.length);
-      victimScoreEl.textContent = score;
-      victimResultEl.innerHTML = resultText(score);
-    }
-
-    function updatePerp() {
-      const score = countYes("perp", perpList.length);
-      perpScoreEl.textContent = score;
-      perpResultEl.innerHTML = resultText(score);
-    }
-
-    // Build question blocks once
-    buildQuestions(victimQuestionsEl, "victim", victimList, updateVictim);
-    buildQuestions(perpQuestionsEl, "perp", perpList, updatePerp);
-
-    // Init summaries
-    updateVictim();
-    updatePerp();
-
-    // Start buttons
-    btnVictim.addEventListener("click", (e) => { e.preventDefault(); showVictim(); });
-    btnPerp.addEventListener("click", (e) => { e.preventDefault(); showPerp(); });
-
-    // Switch buttons
-    document.getElementById("switchToPerp").addEventListener("click", (e) => { e.preventDefault(); showPerp(); });
-    document.getElementById("switchToVictim").addEventListener("click", (e) => { e.preventDefault(); showVictim(); });
-
-    // Reset buttons
-    document.getElementById("resetVictim").addEventListener("click", (e) => {
-      e.preventDefault();
-      resetAnswers("victim", victimList.length);
-      updateVictim();
-    });
-    document.getElementById("resetPerp").addEventListener("click", (e) => {
-      e.preventDefault();
-      resetAnswers("perp", perpList.length);
-      updatePerp();
-    });
-
-    // Extra veiligheid: voorkom per ongeluk submit gedrag (als je later een <form> toevoegt)
-    document.addEventListener("submit", (e) => e.preventDefault());
-  </script>
-</body>
-</html>
+      <p class="note" style="margin-top:10px;">
+        Als je hulp nodig hebt: bel <b>112</b> bij direct gevaar, of neem contact op met <b>Veilig Thuis</b>:
+        <a href="https://veiligthuis.nl/" target="_blank" re_
