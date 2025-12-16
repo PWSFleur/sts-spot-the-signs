@@ -3,60 +3,182 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>STS — Spot The Signs</title>
+  <title>STS — Slachtoffer vragenlijst</title>
   <style>
     :root{
       --bg:#0b1220; --card:#111b2e; --text:#eaf0ff; --muted:#b9c6e6;
       --accent:#6aa9ff; --border:rgba(255,255,255,.12);
+      --danger:#ff6a6a;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#070b14, var(--bg)); color:var(--text)}
     .wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
-    header{padding:18px 0 6px}
-    h1{margin:0 0 6px;font-size:clamp(22px,4vw,34px)}
-    p{margin:8px 0;color:var(--muted);line-height:1.45}
-    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:16px}
-    .card{background:rgba(17,27,46,.9); border:1px solid var(--border); border-radius:16px; padding:16px}
-    .card h2{margin:0 0 6px;font-size:18px}
-    .card p{margin:0 0 14px}
-    a.btn{
-      display:inline-block; text-decoration:none; color:#07101f; background:var(--accent);
-      padding:10px 12px; border-radius:12px; font-weight:700; width:100%; text-align:center;
-    }
-    .note{margin-top:14px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.04)}
+    a{color:#cfe1ff}
+    header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+    h1{margin:0;font-size:clamp(20px,4vw,28px)}
+    .back{border:1px solid var(--border);padding:10px 12px;border-radius:12px;text-decoration:none;background:rgba(255,255,255,.04)}
+    .note{margin:12px 0 16px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.04)}
     .note strong{color:#fff}
-    .links a{color:#cfe1ff}
+    .section{margin:14px 0}
+    .section h2{margin:0 0 8px;font-size:16px;color:#dbe6ff}
+    .q{
+      background:rgba(17,27,46,.92);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px 12px;
+      margin:10px 0;
+    }
+    .q .row{display:flex;gap:10px;align-items:flex-start}
+    .nr{min-width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-weight:800}
+    .text{flex:1;line-height:1.35}
+    .opts{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+    label.opt{
+      display:flex;align-items:center;gap:8px;
+      padding:9px 10px;border:1px solid var(--border);
+      border-radius:12px;background:rgba(255,255,255,.03);
+      cursor:pointer; user-select:none;
+    }
+    input[type="radio"]{transform:scale(1.1)}
+    .actions{margin-top:18px}
+    button{
+      width:100%;
+      padding:12px 14px;
+      border:0;border-radius:14px;
+      background:var(--accent);
+      color:#07101f;
+      font-weight:900;
+      font-size:16px;
+      cursor:pointer;
+    }
+    .small{color:var(--muted);font-size:13px;margin-top:10px;line-height:1.45}
+    .warn{color:#ffd1d1}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <h1>STS — Spot The Signs</h1>
-      <p>Kies welke vragenlijst je wilt invullen.</p>
+      <h1>Vragenlijst — signalen bij (ex-)partner</h1>
+      <a class="back" href="index.html">← Terug</a>
     </header>
 
     <div class="note">
       <p><strong>Belangrijk:</strong> deze vragenlijst is geen diagnose. Het helpt alleen om signalen te herkennen.
-      Als meerdere vragen met <strong>JA</strong> worden beantwoord, kan dat een teken zijn dat je hulp of advies kunt gebruiken.</p>
-      <p class="links">
-        Als je direct hulp nodig hebt: bel <strong>112</strong>.<br/>
-        Of neem contact op met <a href="https://veiligthuis.nl/" target="_blank" rel="noopener">Veilig Thuis</a>.
+      Als meerdere vragen met <strong>JA</strong> worden beantwoord, kan het een teken zijn dat je hulp of advies kunt gebruiken.</p>
+      <p class="warn"><strong>Als je hulp nodig hebt:</strong> bel <strong>112</strong> of neem contact op met
+        <a href="https://veiligthuis.nl/" target="_blank" rel="noopener">Veilig Thuis</a>.
       </p>
+      <p><strong>Tekst:</strong> beantwoord onderstaande vragen met ja/nee.</p>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <h2>Ik maak me zorgen over zijn/haar gedrag</h2>
-        <p>(Slachtoffer / signalen bij (ex-)partner)</p>
-        <a class="btn" href="slachtoffer.html">Start vragenlijst</a>
-      </div>
+    <div id="questions"></div>
 
-      <div class="card">
-        <h2>Ik maak me zorgen over mijn gedrag</h2>
-        <p>(Dader / zelfinzicht)</p>
-        <a class="btn" href="dader.html">Start vragenlijst</a>
-      </div>
+    <div class="actions">
+      <!-- type="button" voorkomt form-submit (en dus scroll/refresh) -->
+      <button id="btnResult" type="button">Bekijk conclusie</button>
+      <div class="small">Tip: je kunt ook eerst alles invullen en dan pas de conclusie bekijken.</div>
     </div>
   </div>
+
+  <script>
+    // --- Vragen (slachtoffer) ---
+    const sections = [
+      { title: "Categorie 1 — Dwingende controle en intieme terreur", items: [
+        "Probeert je (ex-) partner te bepalen waar je bent, wat je doet of met wie je omgaat?",
+        "Moet je vaak verantwoorden waar je was of waarom je ergens was?",
+        "Vraagt je (ex-) partner herhaaldelijk om je locatie ‘om te checken of je loyaal bent’?",
+        "Wordt je (ex-)partner boos of angstig als je buiten zijn zicht of controle bent?"
+      ]},
+      { title: "Categorie 2 — Isolatie (vrienden en familie)", items: [
+        "Probeert jouw (ex-)partner je contact met familie of vrienden te verminderen?",
+        "Zegt jouw (ex-)partner dat jouw vrienden of familie slecht voor je zijn of je negatief beïnvloeden?",
+        "Ben je minder sociaal geworden sinds jullie relatie?"
+      ]},
+      { title: "Categorie 3 — Jaloezie en obsessie", items: [
+        "Is je partner extreem jaloers zonder duidelijke reden?",
+        "Reageert hij boos of gespannen als je aandacht aan anderen geeft?"
+      ]},
+      { title: "Categorie 4 — Manipulatie / gaslighting", items: [
+        "Draait hij situaties om zodat jij je schuldig voelt, ook als je niks verkeerd deed?",
+        "Twijfel je door hem aan je eigen gevoel, gedachten of herinneringen?",
+        "Geeft hij jou de schuld van zijn woede, agressie of problemen?",
+        "Heb je het gevoel dat hij je bewust manipuleert om je aan hem te binden?"
+      ]},
+      { title: "Categorie 5 — Chantage en dreiging", items: [
+        "Gebruikt hij emotionele chantage om zijn zin te krijgen?",
+        "Dreigt hij zichzelf, jou, anderen of (jullie) kinderen iets aan te doen als je bij hem weggaat?",
+        "Heb je ooit het gevoel gehad dat hij gevaarlijker wordt als jij grenzen aangeeft?"
+      ]},
+      { title: "Categorie 6 — Lovebombing en snelle binding", items: [
+        "Wilde hij al heel vroeg in de relatie grote stappen (samenwonen, trouwen of kinderen)?",
+        "Voelde de relatie in het begin te snel?",
+        "Gebruikt hij gedeelde verplichtingen (kinderen, huis, geld) om je bij hem te houden?"
+      ]},
+      { title: "Categorie 7 — Intimidatie, vernedering en angst", items: [
+        "Ben je bang voor zijn reactie, zelfs bij kleine dingen?",
+        "Vernedert, kleineert of intimideert hij je verbaal of fysiek?",
+        "Wordt zijn boosheid in de loop van de tijd erger?"
+      ]},
+      { title: "Categorie 8 — Privacy-inbreuk", items: [
+        "Checkt hij jouw telefoon, berichten of accounts regelmatig zonder jouw toestemming?",
+        "Heb je het gevoel dat je geen eigen privacy, ruimte of autonomie meer hebt?"
+      ]}
+    ];
+
+    const container = document.getElementById("questions");
+
+    let qNumber = 1;
+    const questionIds = [];
+
+    for (const sec of sections) {
+      const secEl = document.createElement("div");
+      secEl.className = "section";
+      secEl.innerHTML = `<h2>${sec.title}</h2>`;
+      container.appendChild(secEl);
+
+      for (const text of sec.items) {
+        const id = `q${qNumber}`;
+        questionIds.push(id);
+
+        const card = document.createElement("div");
+        card.className = "q";
+        card.innerHTML = `
+          <div class="row">
+            <div class="nr">${qNumber}</div>
+            <div class="text">${text}</div>
+          </div>
+          <div class="opts" role="radiogroup" aria-label="Vraag ${qNumber}">
+            <label class="opt">
+              <input type="radio" name="${id}" value="ja" />
+              JA
+            </label>
+            <label class="opt">
+              <input type="radio" name="${id}" value="nee" />
+              NEE
+            </label>
+          </div>
+        `;
+        container.appendChild(card);
+        qNumber++;
+      }
+    }
+
+    function countYes() {
+      let yes = 0;
+      for (const id of questionIds) {
+        const checked = document.querySelector(`input[name="${id}"]:checked`);
+        if (checked && checked.value === "ja") yes++;
+      }
+      return yes;
+    }
+
+    document.getElementById("btnResult").addEventListener("click", () => {
+      const yes = countYes();
+      // sla op en ga naar conclusie-pagina
+      localStorage.setItem("sts_type", "slachtoffer");
+      localStorage.setItem("sts_yes", String(yes));
+      localStorage.setItem("sts_total", String(questionIds.length));
+      window.location.href = "conclusie.html";
+    });
+  </script>
 </body>
 </html>
