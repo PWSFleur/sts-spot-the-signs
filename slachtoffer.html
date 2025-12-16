@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>STS — Spot The Signs</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111b2e; --text:#eaf0ff; --muted:#b9c6e6;
+      --accent:#6aa9ff; --border:rgba(255,255,255,.12);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#070b14, var(--bg)); color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+    header{padding:18px 0 6px}
+    h1{margin:0 0 6px;font-size:clamp(22px,4vw,34px)}
+    p{margin:8px 0;color:var(--muted);line-height:1.45}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:16px}
+    .card{background:rgba(17,27,46,.9); border:1px solid var(--border); border-radius:16px; padding:16px}
+    .card h2{margin:0 0 6px;font-size:18px}
+    .card p{margin:0 0 14px}
+    a.btn{
+      display:inline-block; text-decoration:none; color:#07101f; background:var(--accent);
+      padding:10px 12px; border-radius:12px; font-weight:700; width:100%; text-align:center;
+    }
+    .note{margin-top:14px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.04)}
+    .note strong{color:#fff}
+    .links a{color:#cfe1ff}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>STS — Spot The Signs</h1>
+      <p>Kies welke vragenlijst je wilt invullen.</p>
+    </header>
+
+    <div class="note">
+      <p><strong>Belangrijk:</strong> deze vragenlijst is geen diagnose. Het helpt alleen om signalen te herkennen.
+      Als meerdere vragen met <strong>JA</strong> worden beantwoord, kan dat een teken zijn dat je hulp of advies kunt gebruiken.</p>
+      <p class="links">
+        Als je direct hulp nodig hebt: bel <strong>112</strong>.<br/>
+        Of neem contact op met <a href="https://veiligthuis.nl/" target="_blank" rel="noopener">Veilig Thuis</a>.
+      </p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Ik maak me zorgen over zijn/haar gedrag</h2>
+        <p>(Slachtoffer / signalen bij (ex-)partner)</p>
+        <a class="btn" href="slachtoffer.html">Start vragenlijst</a>
+      </div>
+
+      <div class="card">
+        <h2>Ik maak me zorgen over mijn gedrag</h2>
+        <p>(Dader / zelfinzicht)</p>
+        <a class="btn" href="dader.html">Start vragenlijst</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
