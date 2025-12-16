@@ -115,4 +115,238 @@
       <div class="summary" id="perpSummary">
         <div class="scoreline">
           <span class="pill acc">Score</span>
-          <b id="perpScore">0</
+          <b id="perpScore">0</b> JA-antwoorden
+        </div>
+        <p id="perpResult" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Data ----------
+    const victimList = [
+      // Categorie 1
+      "Probeert je (ex-)partner te bepalen waar je bent, wat je doet of met wie je omgaat?",
+      "Moet je vaak verantwoorden waar je was of waarom je ergens was?",
+      "Vraagt je (ex-)partner herhaaldelijk om je locatie ‘om te checken of je loyaal bent’?",
+      "Wordt je (ex-)partner boos of angstig als je buiten zijn/haar zicht of controle bent?",
+      // Categorie 2
+      "Probeert jouw (ex-)partner je contact met familie of vrienden te verminderen?",
+      "Zegt jouw (ex-)partner dat jouw vrienden of familie slecht voor je zijn of je negatief beïnvloeden?",
+      "Ben je minder sociaal geworden sinds jullie relatie?",
+      // Categorie 3
+      "Is je partner extreem jaloers zonder duidelijke reden?",
+      "Reageert hij/zij boos of gespannen als je aandacht aan anderen geeft?",
+      // Categorie 4
+      "Draait hij/zij situaties om zodat jij je schuldig voelt, ook als je niks verkeerd deed?",
+      "Twijfel je door hem/haar aan je eigen gevoel, gedachten of herinneringen?",
+      "Geeft hij/zij jou de schuld van zijn/haar woede, agressie of problemen?",
+      "Heb je het gevoel dat hij/zij je bewust manipuleert om je aan hem/haar te binden?",
+      // Categorie 5
+      "Gebruikt hij/zij emotionele chantage om z’n/haar zin te krijgen?",
+      "Dreigt hij/zij zichzelf, jou, anderen of (jullie) kinderen iets aan te doen als je bij hem/haar weggaat?",
+      "Heb je ooit het gevoel gehad dat hij/zij gevaarlijker wordt als jij grenzen aangeeft?",
+      // Categorie 6
+      "Wilde hij/zij al heel vroeg in de relatie grote stappen (samenwonen, trouwen, kinderen)?",
+      "Voelde de relatie in het begin te snel?",
+      "Gebruikt hij/zij gedeelde verplichtingen (kinderen, huis, geld) om je bij hem/haar te houden?",
+      // Categorie 7
+      "Ben je bang voor zijn/haar reactie, zelfs bij kleine dingen?",
+      "Vernedert, kleineert of intimideert hij/zij je verbaal of fysiek?",
+      "Wordt zijn/haar boosheid in de loop van de tijd erger?",
+      // Categorie 8
+      "Checkt hij/zij jouw telefoon, berichten of accounts regelmatig zonder jouw toestemming?",
+      "Heb je het gevoel dat je geen eigen privacy, ruimte of autonomie meer hebt?"
+    ];
+
+    const perpList = [
+      // 1. Controle & grenzen
+      "Probeer je te bepalen waar je partner is, wat ze doet of met wie ze contact heeft?",
+      "Verwacht je dat zij altijd opneemt, terugbelt of antwoordt wanneer jij dat wilt?",
+      "Word je boos of onrustig als je niet weet waar ze is of met wie ze is?",
+      "Vraag je haar vaak om haar locatie te delen?",
+      // 2. Jaloezie & bezit
+      "Voel je jaloezie als ze tijd doorbrengt met vrienden, familie of collega’s?",
+      "Denk je snel dat ze niet loyaal is, zelfs als daar geen bewijs voor is?",
+      "Heb je moeite als ze aandacht aan andere mensen geeft?",
+      // 3. Manipulatie & emotionele druk
+      "Geef je haar het gevoel dat iets haar schuld is, ook als jij boos werd?",
+      "Leg je problemen van de relatie vaak bij haar neer?",
+      "Heb je haar wel eens verward of laten twijfelen aan zichzelf (gaslighting)?",
+      "Maak je gebruik van schuldgevoelens om je zin te krijgen?",
+      // 4. Intimidatie & boosheid
+      "Word je snel boos, agressief of intimiderend in discussies?",
+      "Heb je ooit geschreeuwd, vernederd of bedreigd in een ruzie?",
+      "Heb je dingen kapotgemaakt of gegooid om een punt te maken?",
+      "Ben je bang dat je boosheid kan escaleren?",
+      // 5. Isolatie
+      "Heb je haar afgeraden om met bepaalde mensen om te gaan?",
+      "Vind je dat familie of vrienden haar negatief beïnvloeden?",
+      "Heb je geprobeerd haar contact met anderen te beperken?",
+      // 6. Lovebombing & snelle binding
+      "Heb je in het begin van de relatie snel grote stappen gezet (samenwonen, trouwen, kinderen)?",
+      "Had je hierbij de behoefte haar stevig aan je te binden?",
+      "Gebruik je gedeelde verplichtingen soms om haar bij je te houden?",
+      // 7. Dreiging & chantage
+      "Heb je ooit gedreigd jezelf, haar of iemand anders iets aan te doen?",
+      "Heb je woorden gebruikt als: “Als jij weggaat, dan…”?",
+      "Heb je haar ooit bang gemaakt zodat ze zou doen wat jij wilde?",
+      // 8. Privacy & controle
+      "Controleer je haar telefoon, berichten of accounts?",
+      "Heb je ooit een wachtwoord gevraagd of afgedwongen?",
+      "Vind je dat je het recht hebt om alles van haar te weten?"
+    ];
+
+    // ---------- Helpers ----------
+    function buildQuestions(container, keyPrefix, questions, onChange) {
+      container.innerHTML = "";
+      questions.forEach((text, idx) => {
+        const n = idx + 1;
+        const idYes = `${keyPrefix}_${n}_yes`;
+        const idNo  = `${keyPrefix}_${n}_no`;
+
+        const div = document.createElement("div");
+        div.className = "q";
+
+        div.innerHTML = `
+          <div class="qhead">
+            <div class="qnum">${n}</div>
+            <p class="qtext">${text}</p>
+          </div>
+          <div class="answers">
+            <label>
+              <input type="radio" name="${keyPrefix}_${n}" id="${idYes}" value="yes">
+              JA
+            </label>
+            <label>
+              <input type="radio" name="${keyPrefix}_${n}" id="${idNo}" value="no">
+              NEE
+            </label>
+          </div>
+        `;
+
+        // Belangrijk: geen scroll/submit; alleen change-event.
+        div.addEventListener("change", (e) => {
+          if (e.target && e.target.matches('input[type="radio"]')) {
+            onChange();
+          }
+        });
+
+        container.appendChild(div);
+      });
+    }
+
+    function countYes(keyPrefix, total) {
+      let yes = 0;
+      for (let i = 1; i <= total; i++) {
+        const sel = document.querySelector(`input[name="${keyPrefix}_${i}"][value="yes"]`);
+        if (sel && sel.checked) yes++;
+      }
+      return yes;
+    }
+
+    function resultText(score) {
+      if (score <= 4) {
+        return `<span class="pill acc">0–4: laag</span><br>
+        Deze score betekent dat er voorzichtigheid nodig is, maar er zijn op dit moment geen sterke patronen van dwingende controle.
+        <br><br><b>Let op:</b> één enkele rode vlag kan al schadelijk zijn. Neem signalen serieus en kom bij twijfel vroeg in actie.
+        <br><br><b>Advies:</b> let op veranderingen of nieuwe signalen, en zoek steun bij iemand die je vertrouwt.`;
+      }
+      if (score <= 11) {
+        return `<span class="pill.warn">5–11: verhoogd risico</span><br>
+        Dit wijst op meerdere signalen van manipulatie, psychische druk, controle of isolatie.
+        <br><br><b>Advies:</b> praat met een professional/ervaringsdeskundige, verken wat je nodig hebt om weer grip te krijgen,
+        en informeer jezelf over patronen van dwingende controle.`;
+      }
+      if (score <= 17) {
+        return `<span class="pill.warn">12–17: hoog risico</span><br>
+        Er zijn duidelijke patronen die lijken op intieme terreur of dwingende controle. Dit risico kan toenemen.
+        <br><br><b>Advies:</b> raadpleeg een professional, neem contact op met organisaties die gespecialiseerd zijn in partnergeweld,
+        en kijk naar een veiligheidsplan als je je onveilig voelt.`;
+      }
+      return `<span class="pill.danger">18+: acuut / zeer hoog risico</span><br>
+      Dit is een alarmerende score. De combinatie van controle, dreiging, isolatie en manipulatie is een ernstig gevaarssignaal.
+      <br><br><b>Advies:</b> zoek direct (desnoods anoniem) contact met een hulporganisatie, deel je zorgen met iemand die je vertrouwt,
+      en bij dreiging: wacht niet (bel 112).`;
+    }
+
+    function resetAnswers(keyPrefix, total) {
+      for (let i = 1; i <= total; i++) {
+        const radios = document.querySelectorAll(`input[name="${keyPrefix}_${i}"]`);
+        radios.forEach(r => r.checked = false);
+      }
+    }
+
+    // ---------- UI wiring ----------
+    const btnVictim = document.getElementById("btnVictim");
+    const btnPerp = document.getElementById("btnPerp");
+
+    const sectionVictim = document.getElementById("sectionVictim");
+    const sectionPerp = document.getElementById("sectionPerp");
+
+    const victimQuestionsEl = document.getElementById("victimQuestions");
+    const perpQuestionsEl = document.getElementById("perpQuestions");
+
+    const victimScoreEl = document.getElementById("victimScore");
+    const perpScoreEl = document.getElementById("perpScore");
+
+    const victimResultEl = document.getElementById("victimResult");
+    const perpResultEl = document.getElementById("perpResult");
+
+    function showVictim() {
+      sectionPerp.classList.add("hidden");
+      sectionVictim.classList.remove("hidden");
+      // GEEN scroll-to-top!
+    }
+
+    function showPerp() {
+      sectionVictim.classList.add("hidden");
+      sectionPerp.classList.remove("hidden");
+      // GEEN scroll-to-top!
+    }
+
+    function updateVictim() {
+      const score = countYes("victim", victimList.length);
+      victimScoreEl.textContent = score;
+      victimResultEl.innerHTML = resultText(score);
+    }
+
+    function updatePerp() {
+      const score = countYes("perp", perpList.length);
+      perpScoreEl.textContent = score;
+      perpResultEl.innerHTML = resultText(score);
+    }
+
+    // Build question blocks once
+    buildQuestions(victimQuestionsEl, "victim", victimList, updateVictim);
+    buildQuestions(perpQuestionsEl, "perp", perpList, updatePerp);
+
+    // Init summaries
+    updateVictim();
+    updatePerp();
+
+    // Start buttons
+    btnVictim.addEventListener("click", (e) => { e.preventDefault(); showVictim(); });
+    btnPerp.addEventListener("click", (e) => { e.preventDefault(); showPerp(); });
+
+    // Switch buttons
+    document.getElementById("switchToPerp").addEventListener("click", (e) => { e.preventDefault(); showPerp(); });
+    document.getElementById("switchToVictim").addEventListener("click", (e) => { e.preventDefault(); showVictim(); });
+
+    // Reset buttons
+    document.getElementById("resetVictim").addEventListener("click", (e) => {
+      e.preventDefault();
+      resetAnswers("victim", victimList.length);
+      updateVictim();
+    });
+    document.getElementById("resetPerp").addEventListener("click", (e) => {
+      e.preventDefault();
+      resetAnswers("perp", perpList.length);
+      updatePerp();
+    });
+
+    // Extra veiligheid: voorkom per ongeluk submit gedrag (als je later een <form> toevoegt)
+    document.addEventListener("submit", (e) => e.preventDefault());
+  </script>
+</body>
+</html>
