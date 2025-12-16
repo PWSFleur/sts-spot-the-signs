@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>STS — Dader vragenlijst</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111b2e; --text:#eaf0ff; --muted:#b9c6e6;
+      --accent:#6aa9ff; --border:rgba(255,255,255,.12);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#070b14, var(--bg)); color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+    a{color:#cfe1ff}
+    header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+    h1{margin:0;font-size:clamp(20px,4vw,28px)}
+    .back{border:1px solid var(--border);padding:10px 12px;border-radius:12px;text-decoration:none;background:rgba(255,255,255,.04)}
+    .note{margin:12px 0 16px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.04)}
+    .note strong{color:#fff}
+    .section{margin:14px 0}
+    .section h2{margin:0 0 8px;font-size:16px;color:#dbe6ff}
+    .q{
+      background:rgba(17,27,46,.92);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px 12px;
+      margin:10px 0;
+    }
+    .q .row{display:flex;gap:10px;align-items:flex-start}
+    .nr{min-width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-weight:800}
+    .text{flex:1;line-height:1.35}
+    .opts{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+    label.opt{
+      display:flex;align-items:center;gap:8px;
+      padding:9px 10px;border:1px solid var(--border);
+      border-radius:12px;background:rgba(255,255,255,.03);
+      cursor:pointer; user-select:none;
+    }
+    input[type="radio"]{transform:scale(1.1)}
+    .actions{margin-top:18px}
+    button{
+      width:100%;
+      padding:12px 14px;
+      border:0;border-radius:14px;
+      background:var(--accent);
+      color:#07101f;
+      font-weight:900;
+      font-size:16px;
+      cursor:pointer;
+    }
+    .small{color:var(--muted);font-size:13px;margin-top:10px;line-height:1.45}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Vragenlijst — zorgen over mijn gedrag (zelfinzicht)</h1>
+      <a class="back" href="index.html">← Terug</a>
+    </header>
+
+    <div class="note">
+      <p><strong>Beantwoord eerlijk met JA of NEE.</strong> De lijst is bedoeld voor zelfinzicht — niet om je te veroordelen, maar om risico’s te herkennen.</p>
+    </div>
+
+    <div id="questions"></div>
+
+    <div class="actions">
+      <button id="btnResult" type="button">Bekijk conclusie</button>
+      <div class="small">De conclusie is gebaseerd op het aantal <strong>JA</strong>-antwoorden.</div>
+    </div>
+  </div>
+
+  <script>
+    const sections = [
+      { title: "1) Controle & grenzen van je partner", items: [
+        "Probeer je te bepalen waar je partner is, wat ze doet of met wie ze contact heeft?",
+        "Verwacht je dat zij altijd opneemt, terugbelt of antwoordt wanneer jij dat wilt?",
+        "Word je boos of onrustig als je niet weet waar ze is of met wie ze is?",
+        "Vraag je haar vaak om haar locatie te delen?"
+      ]},
+      { title: "2) Jaloezie & bezit", items: [
+        "Voel je jaloezie als ze tijd doorbrengt met vrienden, familie of collega’s?",
+        "Denk je snel dat ze niet loyaal is, zelfs als daar geen bewijs voor is?",
+        "Heb je moeite als ze aandacht aan andere mensen geeft?"
+      ]},
+      { title: "3) Manipulatie & emotionele druk", items: [
+        "Geef je haar het gevoel dat iets haar schuld is, ook als jij boos werd?",
+        "Leg je problemen van de relatie vaak bij haar neer?",
+        "Heb je haar wel eens verward of laten twijfelen aan zichzelf (gaslighting)?",
+        "Maak je gebruik van schuldgevoelens om je zin te krijgen?"
+      ]},
+      { title: "4) Intimidatie & boosheid", items: [
+        "Word je snel boos, agressief of intimiderend in discussies?",
+        "Heb je ooit geschreeuwd, vernederd of bedreigd in een ruzie?",
+        "Heb je dingen kapotgemaakt of gegooid om een punt te maken?",
+        "Ben je bang dat je boosheid kan escaleren?"
+      ]},
+      { title: "5) Isolatie", items: [
+        "Heb je haar afgeraden om met bepaalde mensen om te gaan?",
+        "Vind je dat familie of vrienden haar negatief beïnvloeden?",
+        "Heb je geprobeerd haar contact met anderen te beperken?"
+      ]},
+      { title: "6) Lovebombing & snelle binding", items: [
+        "Heb je in het begin van de relatie snel grote stappen gezet (samenwonen, trouwen, kinderen)?",
+        "Had je hierbij de behoefte haar stevig aan je te binden?",
+        "Gebruik je gedeelde verplichtingen soms om haar bij je te houden?"
+      ]},
+      { title: "7) Dreiging & chantage", items: [
+        "Heb je ooit gedreigd jezelf, haar of iemand anders iets aan te doen?",
+        "Heb je woorden gebruikt als: “Als jij weggaat, dan…”?",
+        "Heb je haar ooit bang gemaakt zodat ze zou doen wat jij wilde?"
+      ]},
+      { title: "8) Privacy & controle", items: [
+        "Controleer je haar telefoon, berichten of accounts?",
+        "Heb je ooit een wachtwoord gevraagd of afgedwongen?",
+        "Vind je dat je het recht hebt om alles van haar te weten?"
+      ]}
+    ];
+
+    const container = document.getElementById("questions");
+
+    let qNumber = 1;
+    const questionIds = [];
+
+    for (const sec of sections) {
+      const secEl = document.createElement("div");
+      secEl.className = "section";
+      secEl.innerHTML = `<h2>${sec.title}</h2>`;
+      container.appendChild(secEl);
+
+      for (const text of sec.items) {
+        const id = `q${qNumber}`;
+        questionIds.push(id);
+
+        const card = document.createElement("div");
+        card.className = "q";
+        card.innerHTML = `
+          <div class="row">
+            <div class="nr">${qNumber}</div>
+            <div class="text">${text}</div>
+          </div>
+          <div class="opts" role="radiogroup" aria-label="Vraag ${qNumber}">
+            <label class="opt">
+              <input type="radio" name="${id}" value="ja" />
+              JA
+            </label>
+            <label class="opt">
+              <input type="radio" name="${id}" value="nee" />
+              NEE
+            </label>
+          </div>
+        `;
+        container.appendChild(card);
+        qNumber++;
+      }
+    }
+
+    function countYes() {
+      let yes = 0;
+      for (const id of questionIds) {
+        const checked = document.querySelector(`input[name="${id}"]:checked`);
+        if (checked && checked.value === "ja") yes++;
+      }
+      return yes;
+    }
+
+    document.getElementById("btnResult").addEventListener("click", () => {
+      const yes = countYes();
+      localStorage.setItem("sts_type", "dader");
+      localStorage.setItem("sts_yes", String(yes));
+      localStorage.setItem("sts_total", String(questionIds.length));
+      window.location.href = "conclusie.html";
+    });
+  </script>
+</body>
+</html>
