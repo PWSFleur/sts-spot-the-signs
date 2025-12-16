@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STS — Spot the Signs</title>
+  <style>
+    body { font-family: system-ui, Arial; margin: 0; background:#f6f7f9; color:#111; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 24px; }
+    .card { background:#fff; border-radius: 14px; padding: 18px; box-shadow: 0 6px 18px rgba(0,0,0,.06); margin: 14px 0; }
+    h1 { margin: 0 0 8px; }
+    h2 { margin: 0 0 10px; font-size: 18px; }
+    .btnrow { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    button { border:0; border-radius: 12px; padding: 10px 14px; cursor:pointer; background:#111; color:#fff; }
+    button.secondary { background:#e9ecef; color:#111; }
+    .muted { color:#555; font-size: 14px; line-height:1.4; }
+    .q { padding: 12px; border: 1px solid #eee; border-radius: 12px; margin: 10px 0; background:#fff; }
+    .q small { color:#666; display:block; margin-bottom:6px; }
+    .pill { display:inline-block; padding:4px 10px; border-radius: 999px; background:#eef2ff; font-size: 12px; margin-left:8px; }
+    .result { border-left: 6px solid #111; padding-left: 12px; }
+    a { color:#0b57d0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>STS — Spot the Signs</h1>
+      <p class="muted">
+        <strong>Belangrijk:</strong> Deze vragenlijst is géén diagnose. Het helpt alleen om signalen te herkennen.
+        Als je meerdere vragen met <strong>JA</strong> beantwoordt, kan dat een teken zijn dat je hulp of advies kunt gebruiken.
+      </p>
+      <p class="muted">
+        <strong>Hulp nodig of direct gevaar?</strong><br/>
+        Bel <strong>112</strong> bij direct gevaar. Of neem contact op met <strong>Veilig Thuis (0800-2000)</strong>:
+        <a href="https://www.veiligthuis.nl/contact" target="_blank" rel="noreferrer">veiligthuis.nl/contact</a>
+      </p>
+    </div>
+
+    <div id="screen" class="card"></div>
+  </div>
+
+<script>
+  // --- DATA ---
+  const vragenSlachtoffer = [
+    { cat:"Dwingende controle en intieme terreur", t:"Probeert je (ex-)partner te bepalen waar je bent, wat je doet of met wie je omgaat?" },
+    { cat:"Dwingende controle en intieme terreur", t:"Moet je vaak verantwoorden waar je was of waarom je ergens was?" },
+    { cat:"Dwingende controle en intieme terreur", t:"Vraagt je (ex-)partner herhaaldelijk om je locatie ‘om te checken of je loyaal bent’?" },
+    { cat:"Dwingende controle en intieme terreur", t:"Wordt je (ex-)partner boos of angstig als je buiten zijn zicht of controle bent?" },
+
+    { cat:"Isolatie (vrienden en familie)", t:"Probeert jouw (ex-)partner je contact met familie of vrienden te verminderen?" },
+    { cat:"Isolatie (vrienden en familie)", t:"Zegt jouw (ex-)partner dat jouw vrienden of familie slecht voor je zijn of je negatief beïnvloeden?" },
+    { cat:"Isolatie (vrienden en familie)", t:"Ben je minder sociaal geworden sinds jullie relatie?" },
+
+    { cat:"Jaloezie en obsessie", t:"Is je partner extreem jaloers zonder duidelijke reden?" },
+    { cat:"Jaloezie en obsessie", t:"Reageert hij boos of gespannen als je aandacht aan anderen geeft?" },
+
+    { cat:"Manipulatie / gaslighting", t:"Draait hij situaties om zodat jij je schuldig voelt, ook als je niks verkeerd deed?" },
+    { cat:"Manipulatie / gaslighting", t:"Twijfel je door hem aan je eigen gevoel, gedachten of herinneringen?" },
+    { cat:"Manipulatie / gaslighting", t:"Geeft hij jou de schuld van zijn woede, agressie of problemen?" },
+    { cat:"Manipulatie / gaslighting", t:"Heb je het gevoel dat hij je bewust manipuleert om je aan hem te binden?" },
+
+    { cat:"Chantage en dreiging", t:"Gebruikt hij emotionele chantage om zijn zin te krijgen?" },
+    { cat:"Chantage en dreiging", t:"Dreigt hij zichzelf, jou, anderen of (jullie) kinderen iets aan te doen als je bij hem weggaat?" },
+    { cat:"Chantage en dreiging", t:"Heb je het gevoel gehad dat hij gevaarlijker wordt als jij grenzen aangeeft?" },
+
+    { cat:"Lovebombing en snelle binding", t:"Wilde hij al heel vroeg in de relatie grote stappen (samenwonen, trouwen, kinderen)?" },
+    { cat:"Lovebombing en snelle binding", t:"Voelde de relatie in het begin te snel?" },
+    { cat:"Lovebombing en snelle binding", t:"Gebruikt hij gedeelde verplichtingen (kinderen/huis/geld) om je bij hem te houden?" },
+
+    { cat:"Intimidatie / vernedering / angst", t:"Ben je bang voor zijn reactie, zelfs bij kleine dingen?" },
+    { cat:"Intimidatie / vernedering / angst", t:"Vernedert, kleinert of intimideert hij je verbaal of fysiek?" },
+    { cat:"Intimidatie / vernedering / angst", t:"Wordt zijn boosheid in de loop van de tijd erger?" },
+
+    { cat:"Privacy-inbreuk", t:"Checkt hij jouw telefoon, berichten of accounts regelmatig zonder jouw toestemming?" },
+    { cat:"Privacy-inbreuk", t:"Heb je het gevoel dat je geen eigen privacy, ruimte of autonomie meer hebt?" },
+  ];
+
+  const vragenDader = [
+    { cat:"Controle & grenzen", t:"Probeer je te bepalen waar je partner is, wat ze doet of met wie ze contact heeft?" },
+    { cat:"Controle & grenzen", t:"Verwacht je dat zij altijd opneemt, terugbelt of antwoordt wanneer jij dat wilt?" },
+    { cat:"Controle & grenzen", t:"Word je boos of onrustig als je niet weet waar ze is of met wie ze is?" },
+    { cat:"Controle & grenzen", t:"Vraag je haar vaak om haar locatie te delen?" },
+
+    { cat:"Jaloezie & bezit", t:"Voel je jaloezie als ze tijd doorbrengt met vrienden, familie of collega’s?" },
+    { cat:"Jaloezie & bezit", t:"Denk je snel dat ze niet loyaal is, zelfs als daar geen bewijs voor is?" },
+    { cat:"Jaloezie & bezit", t:"Heb je moeite als ze aandacht aan andere mensen geeft?" },
+
+    { cat:"Manipulatie & emotionele druk", t:"Geef je haar het gevoel dat iets haar schuld is, ook als jij boos werd?" },
+    { cat:"Manipulatie & emotionele druk", t:"Leg je problemen van de relatie vaak bij haar neer?" },
+    { cat:"Manipulatie & emotionele druk", t:"Heb je haar wel eens verward of laten twijfelen aan zichzelf (gaslighting)?" },
+    { cat:"Manipulatie & emotionele druk", t:"Maak je gebruik van schuldgevoelens om je zin te krijgen?" },
+
+    { cat:"Intimidatie & boosheid", t:"Word je snel boos, agressief of intimiderend in discussies?" },
+    { cat:"Intimidatie & boosheid", t:"Heb je ooit geschreeuwd, vernederd of bedreigd in een ruzie?" },
+    { cat:"Intimidatie & boosheid", t:"Heb je dingen kapotgemaakt of gegooid om een punt te maken?" },
+    { cat:"Intimidatie & boosheid", t:"Ben je bang dat je boosheid kan escaleren?" },
+
+    { cat:"Isolatie", t:"Heb je haar afgeraden om met bepaalde mensen om te gaan?" },
+    { cat:"Isolatie", t:"Vind je dat familie of vrienden haar negatief beïnvloeden?" },
+    { cat:"Isolatie", t:"Heb je geprobeerd haar contact met anderen te beperken?" },
+
+    { cat:"Lovebombing & snelle binding", t:"Heb je in het begin snel grote stappen gezet (samenwonen, trouwen, kinderen)?" },
+    { cat:"Lovebombing & snelle binding", t:"Had je hierbij de behoefte haar stevig aan je te binden?" },
+    { cat:"Lovebombing & snelle binding", t:"Gebruik je gedeelde verplichtingen soms om haar bij je te houden?" },
+
+    { cat:"Dreiging & chantage", t:"Heb je ooit gedreigd jezelf, haar of iemand anders iets aan te doen?" },
+    { cat:"Dreiging & chantage", t:"Heb je woorden gebruikt als: “Als jij weggaat, dan…”?" },
+    { cat:"Dreiging & chantage", t:"Heb je haar ooit bang gemaakt zodat ze zou doen wat jij wilde?" },
+
+    { cat:"Privacy & controle", t:"Controleer je haar telefoon, berichten of accounts?" },
+    { cat:"Privacy & controle", t:"Heb je ooit een wachtwoord gevraagd of afgedwongen?" },
+    { cat:"Privacy & controle", t:"Vind je dat je het recht hebt om alles van haar te weten?" },
+  ];
+
+  function conclusieTekst(jaCount){
+    if (jaCount <= 4) return {
+      titel: "Laag (0–4 JA)",
+      tekst: "Er zijn nu geen sterke patronen zichtbaar, maar blijf signalen serieus nemen. Eén rode vlag kan al schadelijk zijn. Let op veranderingen en zoek steun bij twijfel."
+    };
+    if (jaCount <= 11) return {
+      titel: "Verhoogd risico (5–11 JA)",
+      tekst: "Meerdere signalen van controle/manipulatie/isolatie. Dit zijn serieuze patronen die kunnen escaleren. Praat met een professional of ervaringsdeskundige en informeer jezelf over dwingende controle."
+    };
+    if (jaCount <= 17) return {
+      titel: "Hoog risico (12–17 JA)",
+      tekst: "Duidelijke patronen die lijken op intieme terreur of dwingende controle. Raadpleeg een professional en overweeg een veiligheidsplan als je je onveilig voelt."
+    };
+    return {
+      titel: "Acuut / zeer hoog risico (18+ JA)",
+      tekst: "Alarmerende score. Zoek direct (desnoods anoniem) contact met een hulporganisatie en deel je zorgen met iemand die je vertrouwt. Bij dreiging: wacht niet."
+    };
+  }
+
+  // --- UI FLOW ---
+  const screen = document.getElementById("screen");
+  let state = { mode: null, subtype: null, answers: [] };
+
+  function renderStart(){
+    screen.innerHTML = `
+      <h2>Start</h2>
+      <p class="muted">Kies welke vragenlijst je wilt invullen.</p>
+      <div class="btnrow">
+        <button onclick="app.setMode('slachtoffer')">Ik maak me zorgen (slachtoffer)</button>
+        <button onclick="app.setMode('dader')">Ik maak me zorgen over mijn gedrag (dader)</button>
+      </div>
+    `;
+  }
+
+  function renderSubtype(){
+    screen.innerHTML = `
+      <h2>Beginpagina (slachtoffer)</h2>
+      <p class="muted">Waar maak je je zorgen over?</p>
+      <div class="btnrow">
+        <button onclick="app.startQuiz('slachtoffer','zijn-gedrag')">Ik maak me zorgen over zijn gedrag</button>
+        <button onclick="app.startQuiz('slachtoffer','mijn-gedrag')">Ik maak me zorgen over mijn gedrag</button>
+        <button class="secondary" onclick="app.reset()">Terug</button>
+      </div>
+    `;
+  }
+
+  function renderQuiz(vragen){
+    const answered = state.answers.length;
+    const total = vragen.length;
+
+    const list = vragen.map((q, i) => {
+      const a = state.answers[i];
+      return `
+        <div class="q">
+          <small>${i+1}. ${q.cat}</small>
+          <div>${q.t}</div>
+          <div class="btnrow" style="margin-top:8px;">
+            <button class="${a===true?'':'secondary'}" onclick="app.answer(${i}, true)">JA</button>
+            <button class="${a===false?'':'secondary'}" onclick="app.answer(${i}, false)">NEE</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    screen.innerHTML = `
+      <h2>Vragenlijst <span class="pill">${answered}/${total}</span></h2>
+      <p class="muted">Beantwoord onderstaande vragen met JA/NEE.</p>
+      ${list}
+      <div class="btnrow">
+        <button onclick="app.finish()">Bekijk conclusie</button>
+        <button class="secondary" onclick="app.reset()">Opnieuw</button>
+      </div>
+    `;
+  }
+
+  function renderResult(vragen){
+    const jaCount = state.answers.filter(v => v === true).length;
+    const c = conclusieTekst(jaCount);
+
+    screen.innerHTML = `
+      <h2>Conclusie</h2>
+      <div class="result">
+        <p><strong>JA-antwoorden:</strong> ${jaCount} / ${vragen.length}</p>
+        <p><strong>${c.titel}</strong><br/>${c.tekst}</p>
+      </div>
+      <div class="card" style="box-shadow:none; border:1px solid #eee;">
+        <p class="muted">
+          <strong>Hulp:</strong> Bij direct gevaar bel je <strong>112</strong>.
+          Voor advies/melden: <strong>Veilig Thuis 0800-2000</strong> —
+          <a href="https://www.veiligthuis.nl/contact" target="_blank" rel="noreferrer">veiligthuis.nl/contact</a>
+        </p>
+      </div>
+      <div class="btnrow">
+        <button class="secondary" onclick="app.reset()">Terug naar start</button>
+      </div>
+    `;
+  }
+
+  // expose minimal app
+  window.app = {
+    reset(){
+      state = { mode: null, subtype: null, answers: [] };
+      renderStart();
+    },
+    setMode(mode){
+      state.mode = mode;
+      state.answers = [];
+      if(mode === "slachtoffer") renderSubtype();
+      else this.startQuiz("dader", null);
+    },
+    startQuiz(mode, subtype){
+      state.mode = mode;
+      state.subtype = subtype;
+      state.answers = [];
+      const vragen = (mode === "slachtoffer") ? vragenSlachtoffer : vragenDader;
+      renderQuiz(vragen);
+    },
+    answer(i, val){
+      state.answers[i] = val;
+      const vragen = (state.mode === "slachtoffer") ? vragenSlachtoffer : vragenDader;
+      renderQuiz(vragen);
+      // scroll a bit for nicer UX (optioneel)
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    finish(){
+      const vragen = (state.mode === "slachtoffer") ? vragenSlachtoffer : vragenDader;
+      // als niet alles ingevuld is, telt undefined gewoon niet mee (alleen true)
+      renderResult(vragen);
+    }
+  };
+
+  renderStart();
+</script>
+</body>
+</html>
