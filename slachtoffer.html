@@ -3,329 +3,405 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>STS – Vragenlijst (zorgen over iemand anders)</title>
+  <title>STS – Vragenlijst (Slachtoffer)</title>
   <style>
-    :root{--bg:#f6f7f9;--card:#fff;--text:#111;--muted:#555;--soft:#eef0f3;--accent:#111;--shadow:0 10px 28px rgba(0,0,0,.08);--radius:16px;}
+    :root{
+      --bg:#f6f7f9; --card:#fff; --text:#111; --muted:#5b5b5b;
+      --shadow:0 10px 28px rgba(0,0,0,.08);
+      --radius:16px;
+      --btn:#111; --btnText:#fff;
+      --btn2:#e9ecef; --btn2Text:#111;
+      --danger:#b3261e;
+      --line:#e7e7e7;
+    }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-    a{color:#0b5ed7;text-decoration:none}
-    .topbar{background:#111;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .topbar a{color:#fff;font-weight:700;opacity:.95}
-    .wrap{max-width:980px;margin:0 auto;padding:16px}
-    .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin:14px 0}
-    h1{margin:0 0 6px;font-size:1.35rem}
-    .muted{color:var(--muted)}
-    .notice{background:var(--soft);border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;font-size:.98rem}
-    .cat{margin-top:18px}
-    .cat h2{font-size:1.05rem;margin:0 0 8px}
-    .q{background:#fff;border:1px solid #e6e8ec;border-radius:12px;padding:12px;margin:10px 0}
-    .q .qtext{margin:0 0 10px}
+    .topbar{
+      position:sticky; top:0; z-index:10;
+      background:rgba(246,247,249,.92); backdrop-filter: blur(8px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{max-width:980px;margin:0 auto;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .brand{font-weight:800}
+    .navbtn{
+      display:inline-block; padding:10px 12px; border-radius:12px;
+      background:var(--btn2); color:var(--btn2Text); text-decoration:none; font-weight:700; font-size:14px;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:14px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:12px 0}
+    h1{margin:0 0 6px;font-size:22px}
+    .muted{color:var(--muted);font-size:14px;margin:0}
+    .notice{background:#f1f3f5;border-left:6px solid #111;padding:12px;border-radius:12px;font-size:14px;margin-top:10px}
+    .q{padding:12px 0;border-bottom:1px solid var(--line)}
+    .q:last-child{border-bottom:none}
+    .qtitle{margin:0 0 8px;font-weight:700}
     .choices{display:flex;gap:10px;flex-wrap:wrap}
-    .pill{display:flex;align-items:center;gap:8px;background:#f8f9fb;border:1px solid #e6e8ec;padding:8px 10px;border-radius:999px}
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-    button,.btnlink{border:0;border-radius:12px;padding:14px 16px;font-weight:800;cursor:pointer}
-    button{background:var(--accent);color:#fff;flex:1;min-width:240px}
-    .btnlink{background:#e9ecef;color:#111;text-align:center;flex:1;min-width:240px;display:inline-flex;justify-content:center;align-items:center;text-decoration:none}
-    .error{color:#b00020;font-weight:700}
-    @media (max-width:560px){
-      .wrap{padding:14px}
-      .card{padding:16px}
-      button,.btnlink{min-width:100%}
-      .choices{gap:8px}
+    label.choice{
+      display:flex; align-items:center; gap:8px;
+      background:#fff; border:1px solid var(--line);
+      padding:10px 12px; border-radius:14px;
+      cursor:pointer; user-select:none;
+    }
+    input[type="radio"]{transform:scale(1.05)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{
+      appearance:none; border:none; cursor:pointer;
+      padding:14px 16px; border-radius:14px;
+      font-weight:800; text-decoration:none; text-align:center;
+      background:var(--btn); color:var(--btnText);
+      flex:1; min-width:220px;
+    }
+    .btn.secondary{background:var(--btn2); color:var(--btn2Text)}
+    .small{font-size:13px;color:var(--muted)}
+    /* Popup / modal */
+    .overlay{
+      position:fixed; inset:0; background:rgba(0,0,0,.45);
+      display:none; align-items:center; justify-content:center; padding:18px; z-index:50;
+    }
+    .modal{
+      width:min(520px, 100%);
+      background:#fff; border-radius:18px; box-shadow:0 18px 60px rgba(0,0,0,.25);
+      padding:16px;
+    }
+    .modal h2{margin:0 0 6px;font-size:18px}
+    .modal p{margin:0 0 12px}
+    .modal .row{display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap}
+    .pill{
+      display:inline-block; padding:6px 10px; border-radius:999px;
+      background:#ffe9e7; color:var(--danger); font-weight:800; font-size:12px;
+      margin-left:8px;
+    }
+    @media (max-width:520px){
+      .wrap{padding:12px}
+      .card{padding:14px}
+      label.choice{flex:1; justify-content:center}
+      .btn{min-width:100%}
     }
   </style>
 </head>
 <body>
 
-  <div class="topbar">
-    <a href="index.html">← Terug naar start</a>
-    <div><strong>STS</strong></div>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">STS – Spot the Signs</div>
+    <a class="navbtn" href="index.html">Terug naar start</a>
   </div>
+</div>
 
-  <main class="wrap">
-    <section class="card">
-      <h1>Vragenlijst – Zorgen over iemands gedrag</h1>
-      <p class="muted">
-        Beantwoord onderstaande vragen met <strong>JA</strong> of <strong>NEE</strong>.
-      </p>
+<main class="wrap">
 
-      <div class="notice">
-        <strong>Belangrijk:</strong> Deze vragenlijst is geen diagnose. De uitkomst helpt uitsluitend bij het herkennen van signalen.
-        Bij twijfel of onveiligheid: bel <strong>112</strong> of neem contact op met
-        <a href="https://www.veiligthuis.nl" target="_blank" rel="noopener">Veilig Thuis</a>.
+  <section class="card">
+    <h1>Vragenlijst – Signalering (iemand anders)</h1>
+    <p class="muted">Beantwoord alle vragen met <strong>JA</strong> of <strong>NEE</strong>. De conclusie verschijnt op een aparte pagina.</p>
+    <div class="notice">
+      <strong>Belangrijk:</strong> deze vragenlijst is <strong>geen diagnose</strong>. Het hulpmiddel ondersteunt uitsluitend bij het herkennen van signalen.
+      Bij meerdere “JA”-antwoorden kan het verstandig zijn om steun of advies te zoeken.
+      Bij direct gevaar: bel <strong>112</strong> of neem contact op met
+      <a href="https://www.veiligthuis.nl" target="_blank" rel="noopener">Veilig Thuis</a>.
+    </div>
+  </section>
+
+  <section class="card" id="formCard">
+    <form id="quiz" novalidate>
+
+      <div class="q">
+        <p class="qtitle">Categorie 1 — Dwingende controle en intieme terreur</p>
+        <p class="qtitle">1. Probeert je (ex-)partner te bepalen waar je bent, wat je doet of met wie je omgaat?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q1" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q1" value="nee"> NEE</label>
+        </div>
       </div>
 
-      <p id="err" class="error" aria-live="polite"></p>
-
-      <form id="form">
-        <div class="cat">
-          <h2>Categorie 1 — Dwingende controle en intieme terreur</h2>
-
-          <div class="q">
-            <p class="qtext">1. Probeert je (ex-)partner te bepalen waar je bent, wat je doet of met wie je omgaat?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q1" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q1" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">2. Moet je vaak verantwoorden waar je was of waarom je ergens was?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q2" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q2" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">3. Vraagt je (ex-)partner herhaaldelijk om je locatie ‘om te checken of je loyaal bent’?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q3" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q3" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">4. Wordt je (ex-)partner boos of angstig als je buiten zijn zicht of controle bent?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q4" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q4" value="0"> NEE</label>
-            </div>
-          </div>
+      <div class="q">
+        <p class="qtitle">2. Moet je vaak verantwoorden waar je was of waarom je ergens was?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q2" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q2" value="nee"> NEE</label>
         </div>
+      </div>
 
-        <div class="cat">
-          <h2>Categorie 2 — Isolatie (vrienden en familie)</h2>
-
-          <div class="q">
-            <p class="qtext">5. Probeert jouw (ex-)partner je contact met familie of vrienden te verminderen?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q5" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q5" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">6. Zegt jouw (ex-)partner dat jouw vrienden of familie slecht voor je zijn of je negatief beïnvloeden?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q6" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q6" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">7. Ben je minder sociaal geworden sinds jullie relatie?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q7" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q7" value="0"> NEE</label>
-            </div>
-          </div>
+      <div class="q">
+        <p class="qtitle">3. Vraagt je (ex-)partner herhaaldelijk om je locatie ‘om te checken of je loyaal bent’?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q3" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q3" value="nee"> NEE</label>
         </div>
+      </div>
 
-        <div class="cat">
-          <h2>Categorie 3 — Jaloezie en obsessie</h2>
-
-          <div class="q">
-            <p class="qtext">8. Is je partner extreem jaloers zonder duidelijke reden?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q8" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q8" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">9. Reageert hij boos of gespannen als je aandacht aan anderen geeft?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q9" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q9" value="0"> NEE</label>
-            </div>
-          </div>
+      <div class="q">
+        <p class="qtitle">4. Wordt je (ex-)partner boos of angstig als je buiten zijn zicht of controle bent?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q4" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q4" value="nee"> NEE</label>
         </div>
+      </div>
 
-        <div class="cat">
-          <h2>Categorie 4 — Manipulatie (gaslighting)</h2>
-
-          <div class="q">
-            <p class="qtext">10. Draait hij situaties om zodat jij je schuldig voelt, ook als je niets verkeerd deed?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q10" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q10" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">11. Twijfel je door hem aan je eigen gevoel, gedachten of herinneringen?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q11" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q11" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">12. Geeft hij jou de schuld van zijn woede, agressie of problemen?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q12" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q12" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">13. Heb je het gevoel dat hij je bewust manipuleert om je aan hem te binden?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q13" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q13" value="0"> NEE</label>
-            </div>
-          </div>
+      <div class="q">
+        <p class="qtitle">Categorie 2 — Isolatie (vrienden en familie)</p>
+        <p class="qtitle">5. Probeert jouw (ex-)partner je contact met familie of vrienden te verminderen?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q5" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q5" value="nee"> NEE</label>
         </div>
+      </div>
 
-        <div class="cat">
-          <h2>Categorie 5 — Chantage en dreiging</h2>
-
-          <div class="q">
-            <p class="qtext">14. Gebruikt hij emotionele chantage om zijn zin te krijgen?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q14" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q14" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">15. Dreigt hij zichzelf, jou, anderen of (jullie) kinderen iets aan te doen als je bij hem weggaat?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q15" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q15" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">16. Heb je ooit het gevoel gehad dat hij gevaarlijker wordt als jij grenzen aangeeft?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q16" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q16" value="0"> NEE</label>
-            </div>
-          </div>
+      <div class="q">
+        <p class="qtitle">6. Zegt jouw (ex-)partner dat jouw vrienden of familie slecht voor je zijn of je negatief beïnvloeden?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q6" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q6" value="nee"> NEE</label>
         </div>
+      </div>
 
-        <div class="cat">
-          <h2>Categorie 6 — Lovebombing en snelle binding</h2>
-
-          <div class="q">
-            <p class="qtext">17. Wilde hij al heel vroeg in de relatie grote stappen (samenwonen, trouwen of kinderen)?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q17" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q17" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">18. Voelde de relatie in het begin te snel?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q18" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q18" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">19. Gebruikt hij gedeelde verplichtingen (kinderen, huis, geld) om je bij hem te houden?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q19" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q19" value="0"> NEE</label>
-            </div>
-          </div>
+      <div class="q">
+        <p class="qtitle">7. Ben je minder sociaal geworden sinds jullie relatie?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q7" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q7" value="nee"> NEE</label>
         </div>
+      </div>
 
-        <div class="cat">
-          <h2>Categorie 7 — Intimidatie, vernedering en angst</h2>
-
-          <div class="q">
-            <p class="qtext">20. Ben je bang voor zijn reactie, zelfs bij kleine dingen?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q20" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q20" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">21. Vernedert, kleineert of intimideert hij je verbaal of fysiek?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q21" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q21" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">22. Wordt zijn boosheid in de loop van de tijd erger?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q22" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q22" value="0"> NEE</label>
-            </div>
-          </div>
+      <div class="q">
+        <p class="qtitle">Categorie 3 — Jaloezie en obsessie</p>
+        <p class="qtitle">8. Is je partner extreem jaloers zonder duidelijke reden?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q8" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q8" value="nee"> NEE</label>
         </div>
+      </div>
 
-        <div class="cat">
-          <h2>Categorie 8 — Privacy-inbreuk</h2>
-
-          <div class="q">
-            <p class="qtext">23. Checkt hij jouw telefoon, berichten of accounts regelmatig zonder jouw toestemming?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q23" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q23" value="0"> NEE</label>
-            </div>
-          </div>
-
-          <div class="q">
-            <p class="qtext">24. Heb je het gevoel dat je geen eigen privacy, ruimte of autonomie meer hebt?</p>
-            <div class="choices">
-              <label class="pill"><input type="radio" name="q24" value="1"> JA</label>
-              <label class="pill"><input type="radio" name="q24" value="0"> NEE</label>
-            </div>
-          </div>
+      <div class="q">
+        <p class="qtitle">9. Reageert hij boos of gespannen als je aandacht aan anderen geeft?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q9" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q9" value="nee"> NEE</label>
         </div>
+      </div>
 
-        <div class="actions">
-          <button type="submit">Bekijk conclusie</button>
-          <a class="btnlink" href="index.html">Terug naar start</a>
+      <div class="q">
+        <p class="qtitle">Categorie 4 — Manipulatie en gaslighting</p>
+        <p class="qtitle">10. Draait hij situaties om zodat jij je schuldig voelt, ook als je niets verkeerd deed?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q10" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q10" value="nee"> NEE</label>
         </div>
-      </form>
-    </section>
-  </main>
+      </div>
 
-  <script>
-    (function(){
-      const form = document.getElementById('form');
-      const err = document.getElementById('err');
-      const totalQuestions = 24;
+      <div class="q">
+        <p class="qtitle">11. Twijfel je door hem aan je eigen gevoel, gedachten of herinneringen?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q11" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q11" value="nee"> NEE</label>
+        </div>
+      </div>
 
-      function getScore(){
-        let score = 0;
-        for(let i=1;i<=totalQuestions;i++){
-          const v = form.querySelector(`input[name="q${i}"]:checked`);
-          if(!v) return null; // niet alles ingevuld
-          score += Number(v.value);
-        }
-        return score;
-      }
+      <div class="q">
+        <p class="qtitle">12. Geeft hij jou de schuld van zijn woede, agressie of problemen?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q12" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q12" value="nee"> NEE</label>
+        </div>
+      </div>
 
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        err.textContent = '';
+      <div class="q">
+        <p class="qtitle">13. Heb je het gevoel dat hij je bewust manipuleert om je aan hem te binden?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q13" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q13" value="nee"> NEE</label>
+        </div>
+      </div>
 
-        const score = getScore();
-        if(score === null){
-          err.textContent = 'Vul alsjeblieft alle vragen in voordat je de conclusie bekijkt.';
-          return;
-        }
+      <div class="q">
+        <p class="qtitle">Categorie 5 — Chantage en dreiging</p>
+        <p class="qtitle">14. Gebruikt hij emotionele chantage om zijn zin te krijgen?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q14" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q14" value="nee"> NEE</label>
+        </div>
+      </div>
 
-        localStorage.setItem('stsResult', JSON.stringify({
-          type: 'slachtoffer',
-          score,
-          total: totalQuestions,
-          ts: Date.now()
-        }));
+      <div class="q">
+        <p class="qtitle">15. Dreigt hij zichzelf, jou, anderen of (jullie) kinderen iets aan te doen als je bij hem weggaat?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q15" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q15" value="nee"> NEE</label>
+        </div>
+      </div>
 
-        window.location.href = 'conclusie.html';
-      });
-    })();
-  </script>
+      <div class="q">
+        <p class="qtitle">16. Heb je ooit het gevoel gehad dat hij gevaarlijker wordt als jij grenzen aangeeft?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q16" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q16" value="nee"> NEE</label>
+        </div>
+      </div>
+
+      <div class="q">
+        <p class="qtitle">Categorie 6 — Lovebombing en snelle binding</p>
+        <p class="qtitle">17. Wilde hij al heel vroeg in de relatie grote stappen (samenwonen, trouwen of kinderen)?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q17" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q17" value="nee"> NEE</label>
+        </div>
+      </div>
+
+      <div class="q">
+        <p class="qtitle">18. Voelde de relatie in het begin te snel?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q18" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q18" value="nee"> NEE</label>
+        </div>
+      </div>
+
+      <div class="q">
+        <p class="qtitle">19. Gebruikt hij gedeelde verplichtingen (kinderen, huis, geld) om je bij hem te houden?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q19" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q19" value="nee"> NEE</label>
+        </div>
+      </div>
+
+      <div class="q">
+        <p class="qtitle">Categorie 7 — Intimidatie, vernedering en angst</p>
+        <p class="qtitle">20. Ben je bang voor zijn reactie, zelfs bij kleine dingen?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q20" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q20" value="nee"> NEE</label>
+        </div>
+      </div>
+
+      <div class="q">
+        <p class="qtitle">21. Vernedert, kleineert of intimideert hij je verbaal of fysiek?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q21" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q21" value="nee"> NEE</label>
+        </div>
+      </div>
+
+      <div class="q">
+        <p class="qtitle">22. Wordt zijn boosheid in de loop van de tijd erger?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q22" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q22" value="nee"> NEE</label>
+        </div>
+      </div>
+
+      <div class="q">
+        <p class="qtitle">Categorie 8 — Privacy-inbreuk</p>
+        <p class="qtitle">23. Checkt hij jouw telefoon, berichten of accounts regelmatig zonder jouw toestemming?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q23" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q23" value="nee"> NEE</label>
+        </div>
+      </div>
+
+      <div class="q">
+        <p class="qtitle">24. Heb je het gevoel dat je geen eigen privacy, ruimte of autonomie meer hebt?</p>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q24" value="ja"> JA</label>
+          <label class="choice"><input type="radio" name="q24" value="nee"> NEE</label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn" id="submitBtn">Bekijk conclusie</button>
+        <a class="btn secondary" href="index.html">Terug naar start</a>
+      </div>
+
+      <p class="small">
+        Tip: beantwoord elke vraag. De conclusie wordt gebaseerd op het aantal “JA”-antwoorden.
+      </p>
+
+    </form>
+  </section>
+
+</main>
+
+<!-- Popup -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal">
+    <h2 id="mTitle">Niet alle vragen zijn ingevuld <span class="pill" id="missingPill">—</span></h2>
+    <p id="mText">Vul alle vragen in om een betrouwbare conclusie te ontvangen.</p>
+    <div class="row">
+      <button type="button" class="btn secondary" id="closeModalBtn">Sluiten</button>
+      <button type="button" class="btn" id="goFirstMissingBtn">Ga naar eerste open vraag</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const TOTAL = 24;
+
+  function getFirstMissing() {
+    for (let i = 1; i <= TOTAL; i++) {
+      const name = "q" + i;
+      const checked = document.querySelector('input[name="'+name+'"]:checked');
+      if (!checked) return i;
+    }
+    return null;
+  }
+
+  function getScore() {
+    let score = 0;
+    for (let i = 1; i <= TOTAL; i++) {
+      const checked = document.querySelector('input[name="q'+i+'"]:checked');
+      if (checked && checked.value === "ja") score++;
+    }
+    return score;
+  }
+
+  const overlay = document.getElementById("overlay");
+  const missingPill = document.getElementById("missingPill");
+  const mText = document.getElementById("mText");
+
+  function openModal(missingCount, firstMissing) {
+    missingPill.textContent = missingCount + " open";
+    mText.textContent = "Er ontbreken nog " + missingCount + " antwoord(en). Vul alles in om door te gaan.";
+    overlay.style.display = "flex";
+    overlay.dataset.firstMissing = String(firstMissing);
+  }
+
+  function closeModal() {
+    overlay.style.display = "none";
+  }
+
+  document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+
+  document.getElementById("goFirstMissingBtn").addEventListener("click", () => {
+    const first = parseInt(overlay.dataset.firstMissing || "1", 10);
+    const el = document.querySelector('input[name="q'+first+'"]');
+    if (el) {
+      el.scrollIntoView({behavior:"smooth", block:"center"});
+    }
+    closeModal();
+  });
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.getElementById("submitBtn").addEventListener("click", () => {
+    const firstMissing = getFirstMissing();
+    if (firstMissing !== null) {
+      const missingCount = Array.from({length: TOTAL}, (_, idx) => idx+1)
+        .filter(i => !document.querySelector('input[name="q'+i+'"]:checked')).length;
+      openModal(missingCount, firstMissing);
+      return;
+    }
+
+    const score = getScore();
+
+    localStorage.setItem("stsResult", JSON.stringify({
+      type: "slachtoffer",
+      score,
+      total: TOTAL,
+      ts: Date.now()
+    }));
+
+    window.location.href = "conclusie.html";
+  });
+</script>
+
 </body>
 </html>
