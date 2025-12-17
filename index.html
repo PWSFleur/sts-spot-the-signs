@@ -2,61 +2,184 @@
 <html lang="nl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>STS — Spot The Signs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STS – Spot the Signs</title>
+
   <style>
-    :root{
-      --bg:#0b1220; --card:#111b2e; --text:#eaf0ff; --muted:#b9c6e6;
-      --accent:#6aa9ff; --border:rgba(255,255,255,.12);
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f6f7f9;
+      color: #1a1a1a;
+      line-height: 1.6;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#070b14, var(--bg)); color:var(--text)}
-    .wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
-    header{padding:18px 0 6px}
-    h1{margin:0 0 6px;font-size:clamp(22px,4vw,34px)}
-    p{margin:8px 0;color:var(--muted);line-height:1.45}
-    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:16px}
-    .card{background:rgba(17,27,46,.9); border:1px solid var(--border); border-radius:16px; padding:16px}
-    .card h2{margin:0 0 6px;font-size:18px}
-    .card p{margin:0 0 14px}
-    a.btn{
-      display:inline-block; text-decoration:none; color:#07101f; background:var(--accent);
-      padding:10px 12px; border-radius:12px; font-weight:700; width:100%; text-align:center;
+
+    header {
+      background: linear-gradient(135deg, #111, #333);
+      color: white;
+      padding: 48px 20px;
+      text-align: center;
     }
-    .note{margin-top:14px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.04)}
-    .note strong{color:#fff}
-    .links a{color:#cfe1ff}
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 2.2rem;
+    }
+
+    header p {
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .btnrow {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 220px;
+      text-align: center;
+      padding: 14px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      background: #111;
+      color: white;
+    }
+
+    .btn.secondary {
+      background: #e9ecef;
+      color: #111;
+    }
+
+    .notice {
+      font-size: 0.95rem;
+      background: #f1f3f5;
+      border-left: 6px solid #111;
+      padding: 14px;
+      border-radius: 10px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+      padding: 24px;
+    }
+
+    footer a {
+      color: #0b5ed7;
+      text-decoration: none;
+    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <h1>STS — Spot The Signs</h1>
-      <p>Kies welke vragenlijst je wilt invullen.</p>
-    </header>
 
-    <div class="note">
-      <p><strong>Belangrijk:</strong> deze vragenlijst is geen diagnose. Het helpt alleen om signalen te herkennen.
-      Als meerdere vragen met <strong>JA</strong> worden beantwoord, kan dat een teken zijn dat je hulp of advies kunt gebruiken.</p>
-      <p class="links">
-        Als je direct hulp nodig hebt: bel <strong>112</strong>.<br/>
-        Of neem contact op met <a href="https://veiligthuis.nl/" target="_blank" rel="noopener">Veilig Thuis</a>.
-      </p>
-    </div>
+<header>
+  <h1>STS – Spot the Signs</h1>
+  <p>
+    Een zelftest die helpt om signalen van gevaarlijk, controlerend of escalerend gedrag
+    in relaties te herkennen — met als doel bewustwording en preventie.
+  </p>
+</header>
 
-    <div class="grid">
-      <div class="card">
-        <h2>Ik maak me zorgen over zijn/haar gedrag</h2>
-        <p>(Slachtoffer / signalen bij (ex-)partner)</p>
-        <a class="btn" href="slachtoffer.html">Start vragenlijst</a>
-      </div>
+<main class="wrap">
 
-      <div class="card">
-        <h2>Ik maak me zorgen over mijn gedrag</h2>
-        <p>(Dader / zelfinzicht)</p>
-        <a class="btn" href="dader.html">Start vragenlijst</a>
-      </div>
+  <div class="card">
+    <h2>Wat is deze vragenlijst?</h2>
+    <p>
+      STS – Spot the Signs is een educatieve zelftest die helpt om
+      <strong>vroegtijdige signalen van dwingende controle, manipulatie en intieme terreur</strong>
+      te herkennen. Deze patronen komen vaak voor in relaties waarin psychisch of fysiek geweld
+      kan ontstaan.
+    </p>
+    <p>
+      De vragenlijst is bedoeld om inzicht te geven — niet om te oordelen.
+      Het herkennen van signalen kan helpen om eerder steun, hulp of advies te zoeken.
+    </p>
+
+    <div class="notice">
+      <strong>Belangrijk:</strong><br>
+      Deze vragenlijst is <strong>geen diagnose</strong>.  
+      Eén enkele “JA” kan al betekenisvol zijn.  
+      Als meerdere vragen met JA worden beantwoord, kan dat een teken zijn dat extra ondersteuning nodig is.
     </div>
   </div>
+
+  <div class="card">
+    <h2>Kies de vragenlijst</h2>
+    <p>
+      Kies de lijst die het beste bij jouw situatie past.
+    </p>
+
+    <div class="btnrow">
+      <a href="slachtoffer.html" class="btn">
+        Ik maak me zorgen over<br>iemand anders
+      </a>
+
+      <a href="dader.html" class="btn secondary">
+        Ik maak me zorgen over<br>mijn eigen gedrag
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Over dit project</h2>
+    <p>
+      Dit project is ontwikkeld in het kader van een schoolopdracht en richt zich op
+      bewustwording rondom partnergeweld en femicide.
+      Door signalen eerder te herkennen, kan escalatie mogelijk worden voorkomen.
+    </p>
+    <p>
+      De inhoud is gebaseerd op bekende patronen uit onderzoek en praktijkervaringen,
+      en is bedoeld als laagdrempelige eerste stap naar inzicht en hulp.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Hulp nodig?</h2>
+    <p>
+      Als je je onveilig voelt of twijfelt:
+    </p>
+    <ul>
+      <li><strong>Bij direct gevaar:</strong> bel <strong>112</strong></li>
+      <li>
+        <strong>Veilig Thuis:</strong>
+        <a href="https://www.veiligthuis.nl" target="_blank" rel="noopener">
+          www.veiligthuis.nl
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</main>
+
+<footer>
+  © STS – Spot the Signs • Educatief project  
+</footer>
+
 </body>
 </html>
