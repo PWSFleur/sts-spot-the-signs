@@ -3,94 +3,67 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>STS – Spot the Signs</title>
-  <meta name="description" content="STS – Spot the Signs: een educatieve zelftest om signalen van controlerend of escalerend gedrag te herkennen." />
+  <title>STS – Conclusie</title>
 
   <style>
     :root{
-      --bg:#f6f7f9;
-      --card:#ffffff;
-      --text:#121212;
-      --muted:#5b5b5b;
-      --line:#e8eaee;
-      --brand:#111;
-      --brand2:#2b2b2b;
-      --link:#0b5ed7;
-      --shadow: 0 10px 28px rgba(0,0,0,.08);
-      --radius: 16px;
+      --bg:#f6f7f9; --card:#fff; --text:#121212; --muted:#5b5b5b;
+      --line:#e8eaee; --brand:#111; --link:#0b5ed7; --shadow:0 10px 28px rgba(0,0,0,.08);
+      --radius:16px;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      line-height:1.65;
-    }
-    a{color:var(--link); text-decoration:none}
+    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+    a{color:var(--link);text-decoration:none}
     a:hover{text-decoration:underline}
 
-    .hero{
-      position:relative;
-      overflow:hidden;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
+    .topbar{
+      background: linear-gradient(135deg, #111, #2b2b2b);
       color:#fff;
+      padding: 14px 14px;
     }
-    .hero .img{
-      position:absolute; inset:0;
-      width:100%; height:100%;
-      object-fit:cover;
-      opacity:.22;
-      transform: scale(1.02);
+    .topbar .inner{
+      max-width: 980px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
-    .hero .inner{
-      position:relative;
-      padding: 44px 18px 34px;
-      max-width: 980px;
-      margin: 0 auto;
-    }
-    .hero h1{
-      margin:0 0 10px;
-      font-size: clamp(1.7rem, 3.2vw, 2.4rem);
-      letter-spacing:.2px;
-    }
-    .hero p{
-      margin:0;
-      max-width: 780px;
-      opacity:.95;
-      font-size: 1.03rem;
+    .topbar h1{margin:0;font-size:1.05rem;font-weight:800}
+    .back{
+      display:inline-flex; align-items:center; gap:8px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight:700;
+      text-decoration:none;
+      white-space:nowrap;
     }
 
-    .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 18px;
-    }
+    .wrap{max-width:980px;margin:0 auto;padding:16px}
     .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: var(--shadow);
-      margin: 14px 0;
+      background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+      padding:16px; box-shadow:var(--shadow); margin: 12px 0;
     }
-    h2{margin:0 0 10px; font-size: 1.2rem}
-    p{margin: 10px 0}
-    ul{margin: 10px 0 0; padding-left: 18px}
-    .notice{
+    h2{margin:0 0 8px;font-size:1.15rem}
+    p{margin:10px 0}
+    .muted{color:var(--muted);font-size:.95rem}
+
+    .pill{
+      display:inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
       background:#f1f3f5;
-      border-left: 6px solid var(--brand);
-      padding: 12px 12px;
-      border-radius: 12px;
-      font-size: .98rem;
+      font-weight:800;
+      margin-left:8px;
+      font-size:.95rem;
     }
 
-    .btnrow{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top: 12px;
+    .notice{
+      background:#f1f3f5;border-left:6px solid var(--brand);
+      padding:12px;border-radius:12px;font-size:.98rem
     }
+
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px}
     .btn{
       appearance:none;
       border:1px solid transparent;
@@ -98,101 +71,61 @@
       color:#fff;
       padding: 14px 16px;
       border-radius: 14px;
-      font-weight: 700;
+      font-weight: 800;
+      width:100%;
+      cursor:pointer;
       text-align:center;
-      flex:1;
-      min-width: 240px;
-      box-shadow: 0 8px 18px rgba(0,0,0,.10);
+      text-decoration:none;
+      display:inline-block;
     }
-    .btn.secondary{
-      background:#e9ecef;
-      color:var(--brand);
-      border-color:#dfe3e8;
-      box-shadow:none;
-    }
-    .btn:active{transform: translateY(1px)}
+    .btn.secondary{background:#e9ecef;color:var(--brand);border-color:#dfe3e8}
 
-    footer{
-      text-align:center;
-      font-size:.92rem;
-      color:var(--muted);
-      padding: 18px 18px 28px;
-    }
-
-    /* Mobiel: strakker */
     @media (max-width: 520px){
-      .wrap{padding: 14px}
-      .card{padding: 14px}
-      .btnrow{gap:10px}
-      .btn{min-width: 100%; width:100%}
-      .hero .inner{padding: 38px 14px 28px}
-      .hero p{font-size: 1rem}
+      .wrap{padding:12px}
+      .card{padding:14px}
+      .topbar h1{font-size:1rem}
+      .back{padding:9px 11px}
     }
   </style>
 </head>
 
 <body>
 
-<header class="hero">
-  <img class="img" src="images/images_banner.jpg" alt="STS banner" />
+<header class="topbar">
   <div class="inner">
-    <h1>STS – Spot the Signs</h1>
-    <p>
-      Een educatieve zelftest die helpt om signalen van gevaarlijk, controlerend of escalerend gedrag
-      binnen relaties te herkennen. Doel: bewustwording en preventie.
-    </p>
+    <h1>Conclusie</h1>
+    <a class="back" href="index.html">← Terug naar start</a>
   </div>
 </header>
 
 <main class="wrap">
-
   <section class="card">
-    <h2>Doel en inhoud</h2>
-    <p>
-      STS – Spot the Signs is een laagdrempelige vragenlijst die ondersteunt bij het herkennen van
-      <strong>dwingende controle, manipulatie, isolatie en intimidatie</strong>.
-      Dit zijn patronen die in sommige relaties voorafgaan aan escalatie en (partner)geweld.
-    </p>
+    <h2>Jouw score <span class="pill" id="scorePill">—</span></h2>
+    <p class="muted" id="typeLine">—</p>
 
-    <div class="notice">
-      <strong>Belangrijke toelichting</strong><br>
-      Deze vragenlijst is <strong>geen diagnose</strong> en vervangt geen professioneel advies.
-      Een enkele “JA” kan al relevant zijn; meerdere “JA”-antwoorden kunnen wijzen op een verhoogd risico.
-      Neem signalen serieus en zoek tijdig ondersteuning.
+    <div class="notice" id="resultBox">
+      Resultaat wordt geladen…
     </div>
-  </section>
 
-  <section class="card">
-    <h2>Kies de vragenlijst</h2>
-    <p>Kies de lijst die het beste aansluit bij jouw situatie.</p>
+    <div class="card" style="box-shadow:none; border-style:dashed">
+      <h2>Hulp en advies</h2>
+      <ul>
+        <li><strong>Bij direct gevaar:</strong> bel <strong>112</strong></li>
+        <li><strong>Veilig Thuis:</strong> <a href="https://www.veiligthuis.nl" target="_blank" rel="noopener">www.veiligthuis.nl</a></li>
+      </ul>
+      <p class="muted">
+        Let op: deze uitkomst is een indicatie. Als je je onveilig voelt of twijfelt, zoek ondersteuning.
+      </p>
+    </div>
 
     <div class="btnrow">
-      <a class="btn" href="slachtoffer.html">Ik maak mij zorgen over iemand anders</a>
-      <a class="btn secondary" href="dader.html">Ik maak mij zorgen over mijn eigen gedrag</a>
+      <a class="btn secondary" href="index.html">Terug naar start</a>
+      <a class="btn" href="slachtoffer.html">Vragenlijst “zorgen over ander”</a>
+      <a class="btn" href="dader.html">Vragenlijst “zorgen over eigen gedrag”</a>
     </div>
   </section>
-
-  <section class="card">
-    <h2>Hulp en advies</h2>
-    <ul>
-      <li><strong>Bij direct gevaar:</strong> bel <strong>112</strong></li>
-      <li><strong>Veilig Thuis:</strong> <a href="https://www.veiligthuis.nl" target="_blank" rel="noopener">www.veiligthuis.nl</a></li>
-    </ul>
-  </section>
-
-  <section class="card">
-    <h2>Over dit project</h2>
-    <p>
-      Dit project is ontwikkeld in het kader van een schoolopdracht en richt zich op bewustwording
-      rondom partnergeweld en femicide. Vroege signalering kan bijdragen aan het tijdig zoeken van hulp.
-    </p>
-  </section>
-
 </main>
 
-<footer>
-  © STS – Spot the Signs • Educatief project
-</footer>
-
-</body>
-</html>
+<script>
+  const score = parseInt(localStorage.getItem("sts_score") || "0", 10);
+  const type = localSto
