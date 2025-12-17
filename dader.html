@@ -2,176 +2,266 @@
 <html lang="nl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>STS — Dader vragenlijst</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STS – Vragenlijst (zorgen over eigen gedrag)</title>
+
   <style>
     :root{
-      --bg:#0b1220; --card:#111b2e; --text:#eaf0ff; --muted:#b9c6e6;
-      --accent:#6aa9ff; --border:rgba(255,255,255,.12);
+      --bg:#f6f7f9; --card:#fff; --text:#121212; --muted:#5b5b5b;
+      --line:#e8eaee; --brand:#111; --link:#0b5ed7; --shadow:0 10px 28px rgba(0,0,0,.08);
+      --radius:16px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#070b14, var(--bg)); color:var(--text)}
-    .wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
-    a{color:#cfe1ff}
-    header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
-    h1{margin:0;font-size:clamp(20px,4vw,28px)}
-    .back{border:1px solid var(--border);padding:10px 12px;border-radius:12px;text-decoration:none;background:rgba(255,255,255,.04)}
-    .note{margin:12px 0 16px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.04)}
-    .note strong{color:#fff}
-    .section{margin:14px 0}
-    .section h2{margin:0 0 8px;font-size:16px;color:#dbe6ff}
+    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+    a{color:var(--link);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    .topbar{
+      background: linear-gradient(135deg, #111, #2b2b2b);
+      color:#fff;
+      padding: 14px 14px;
+    }
+    .topbar .inner{
+      max-width: 980px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .topbar h1{margin:0;font-size:1.05rem;font-weight:800; letter-spacing:.2px}
+    .back{
+      display:inline-flex; align-items:center; gap:8px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight:700;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    .wrap{max-width:980px;margin:0 auto;padding:16px}
+    .card{
+      background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+      padding:16px; box-shadow:var(--shadow); margin: 12px 0;
+    }
+    h2{margin:0 0 8px;font-size:1.15rem}
+    p{margin:10px 0}
+    .notice{
+      background:#f1f3f5;border-left:6px solid var(--brand);
+      padding:12px;border-radius:12px;font-size:.98rem
+    }
+
     .q{
-      background:rgba(17,27,46,.92);
-      border:1px solid var(--border);
+      background:#fff;
+      border:1px solid var(--line);
       border-radius:14px;
-      padding:12px 12px;
+      padding:12px;
       margin:10px 0;
     }
-    .q .row{display:flex;gap:10px;align-items:flex-start}
-    .nr{min-width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-weight:800}
-    .text{flex:1;line-height:1.35}
-    .opts{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
-    label.opt{
-      display:flex;align-items:center;gap:8px;
-      padding:9px 10px;border:1px solid var(--border);
-      border-radius:12px;background:rgba(255,255,255,.03);
-      cursor:pointer; user-select:none;
+    .q .t{font-weight:700; margin-bottom:10px}
+    .opts{display:flex; gap:10px; flex-wrap:wrap}
+    .opt{
+      flex:1; min-width: 140px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      display:flex; align-items:center; gap:10px;
+      background:#fafbfc;
     }
-    input[type="radio"]{transform:scale(1.1)}
-    .actions{margin-top:18px}
-    button{
+    .muted{color:var(--muted);font-size:.95rem}
+
+    .stickybar{
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      margin-top: 14px;
+      padding: 12px;
+      background: rgba(246,247,249,.92);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--line);
+      border-radius: 16px;
+    }
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      appearance:none;
+      border:1px solid transparent;
+      background: var(--brand);
+      color:#fff;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-weight: 800;
       width:100%;
-      padding:12px 14px;
-      border:0;border-radius:14px;
-      background:var(--accent);
-      color:#07101f;
-      font-weight:900;
-      font-size:16px;
       cursor:pointer;
+      text-align:center;
     }
-    .small{color:var(--muted);font-size:13px;margin-top:10px;line-height:1.45}
+    .btn.secondary{
+      background:#e9ecef; color:var(--brand); border-color:#dfe3e8;
+    }
+    .btn:active{transform: translateY(1px)}
+
+    @media (max-width: 520px){
+      .wrap{padding:12px}
+      .card{padding:14px}
+      .opt{min-width: 100%}
+      .topbar h1{font-size:1rem}
+      .back{padding:9px 11px}
+    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Vragenlijst — zorgen over mijn gedrag (zelfinzicht)</h1>
-      <a class="back" href="index.html">← Terug</a>
-    </header>
 
-    <div class="note">
-      <p><strong>Beantwoord eerlijk met JA of NEE.</strong> De lijst is bedoeld voor zelfinzicht — niet om je te veroordelen, maar om risico’s te herkennen.</p>
-    </div>
-
-    <div id="questions"></div>
-
-    <div class="actions">
-      <button id="btnResult" type="button">Bekijk conclusie</button>
-      <div class="small">De conclusie is gebaseerd op het aantal <strong>JA</strong>-antwoorden.</div>
-    </div>
+<header class="topbar">
+  <div class="inner">
+    <h1>Vragenlijst – zorgen over eigen gedrag</h1>
+    <a class="back" href="index.html">← Terug naar start</a>
   </div>
+</header>
 
-  <script>
-    const sections = [
-      { title: "1) Controle & grenzen van je partner", items: [
-        "Probeer je te bepalen waar je partner is, wat ze doet of met wie ze contact heeft?",
-        "Verwacht je dat zij altijd opneemt, terugbelt of antwoordt wanneer jij dat wilt?",
-        "Word je boos of onrustig als je niet weet waar ze is of met wie ze is?",
-        "Vraag je haar vaak om haar locatie te delen?"
-      ]},
-      { title: "2) Jaloezie & bezit", items: [
-        "Voel je jaloezie als ze tijd doorbrengt met vrienden, familie of collega’s?",
-        "Denk je snel dat ze niet loyaal is, zelfs als daar geen bewijs voor is?",
-        "Heb je moeite als ze aandacht aan andere mensen geeft?"
-      ]},
-      { title: "3) Manipulatie & emotionele druk", items: [
-        "Geef je haar het gevoel dat iets haar schuld is, ook als jij boos werd?",
-        "Leg je problemen van de relatie vaak bij haar neer?",
-        "Heb je haar wel eens verward of laten twijfelen aan zichzelf (gaslighting)?",
-        "Maak je gebruik van schuldgevoelens om je zin te krijgen?"
-      ]},
-      { title: "4) Intimidatie & boosheid", items: [
-        "Word je snel boos, agressief of intimiderend in discussies?",
-        "Heb je ooit geschreeuwd, vernederd of bedreigd in een ruzie?",
-        "Heb je dingen kapotgemaakt of gegooid om een punt te maken?",
-        "Ben je bang dat je boosheid kan escaleren?"
-      ]},
-      { title: "5) Isolatie", items: [
-        "Heb je haar afgeraden om met bepaalde mensen om te gaan?",
-        "Vind je dat familie of vrienden haar negatief beïnvloeden?",
-        "Heb je geprobeerd haar contact met anderen te beperken?"
-      ]},
-      { title: "6) Lovebombing & snelle binding", items: [
-        "Heb je in het begin van de relatie snel grote stappen gezet (samenwonen, trouwen, kinderen)?",
-        "Had je hierbij de behoefte haar stevig aan je te binden?",
-        "Gebruik je gedeelde verplichtingen soms om haar bij je te houden?"
-      ]},
-      { title: "7) Dreiging & chantage", items: [
-        "Heb je ooit gedreigd jezelf, haar of iemand anders iets aan te doen?",
-        "Heb je woorden gebruikt als: “Als jij weggaat, dan…”?",
-        "Heb je haar ooit bang gemaakt zodat ze zou doen wat jij wilde?"
-      ]},
-      { title: "8) Privacy & controle", items: [
-        "Controleer je haar telefoon, berichten of accounts?",
-        "Heb je ooit een wachtwoord gevraagd of afgedwongen?",
-        "Vind je dat je het recht hebt om alles van haar te weten?"
-      ]}
-    ];
+<main class="wrap">
 
-    const container = document.getElementById("questions");
+  <section class="card">
+    <h2>Toelichting</h2>
+    <p class="muted">
+      Beantwoord de vragen zo eerlijk mogelijk met <strong>JA</strong> of <strong>NEE</strong>.
+      Deze lijst is bedoeld voor zelfreflectie en risicobewustzijn. De uitkomst is een indicatie en geen diagnose.
+    </p>
+    <div class="notice">
+      <strong>Direct gevaar?</strong> Bel <strong>112</strong>. Voor advies: <a href="https://www.veiligthuis.nl" target="_blank" rel="noopener">Veilig Thuis</a>.
+    </div>
+  </section>
 
-    let qNumber = 1;
-    const questionIds = [];
+  <section class="card">
+    <h2>Vragen</h2>
 
-    for (const sec of sections) {
-      const secEl = document.createElement("div");
-      secEl.className = "section";
-      secEl.innerHTML = `<h2>${sec.title}</h2>`;
-      container.appendChild(secEl);
+    <!-- 1–4 -->
+    <div class="q"><div class="t">1. Probeer je te bepalen waar je partner is, wat zij doet of met wie zij contact heeft?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q1" value="ja">JA</label><label class="opt"><input type="radio" name="q1" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">2. Verwacht je dat zij altijd opneemt, terugbelt of antwoordt wanneer jij dat wilt?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q2" value="ja">JA</label><label class="opt"><input type="radio" name="q2" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">3. Word je boos of onrustig als je niet weet waar zij is of met wie zij is?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q3" value="ja">JA</label><label class="opt"><input type="radio" name="q3" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">4. Vraag je haar vaak om haar locatie te delen?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q4" value="ja">JA</label><label class="opt"><input type="radio" name="q4" value="nee">NEE</label></div>
+    </div>
 
-      for (const text of sec.items) {
-        const id = `q${qNumber}`;
-        questionIds.push(id);
+    <!-- 5–7 -->
+    <div class="q"><div class="t">5. Voel je jaloezie als zij tijd doorbrengt met vrienden, familie of collega’s?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q5" value="ja">JA</label><label class="opt"><input type="radio" name="q5" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">6. Denk je snel dat zij niet loyaal is, zelfs als daar geen bewijs voor is?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q6" value="ja">JA</label><label class="opt"><input type="radio" name="q6" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">7. Heb je moeite als zij aandacht aan andere mensen geeft?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q7" value="ja">JA</label><label class="opt"><input type="radio" name="q7" value="nee">NEE</label></div>
+    </div>
 
-        const card = document.createElement("div");
-        card.className = "q";
-        card.innerHTML = `
-          <div class="row">
-            <div class="nr">${qNumber}</div>
-            <div class="text">${text}</div>
-          </div>
-          <div class="opts" role="radiogroup" aria-label="Vraag ${qNumber}">
-            <label class="opt">
-              <input type="radio" name="${id}" value="ja" />
-              JA
-            </label>
-            <label class="opt">
-              <input type="radio" name="${id}" value="nee" />
-              NEE
-            </label>
-          </div>
-        `;
-        container.appendChild(card);
-        qNumber++;
-      }
+    <!-- 8–11 -->
+    <div class="q"><div class="t">8. Geef je haar het gevoel dat iets haar schuld is, ook als jij boos werd?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q8" value="ja">JA</label><label class="opt"><input type="radio" name="q8" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">9. Leg je problemen in de relatie vaak bij haar neer?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q9" value="ja">JA</label><label class="opt"><input type="radio" name="q9" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">10. Heb je haar wel eens verward of laten twijfelen aan zichzelf (gaslighting)?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q10" value="ja">JA</label><label class="opt"><input type="radio" name="q10" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">11. Maak je gebruik van schuldgevoelens om je zin te krijgen?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q11" value="ja">JA</label><label class="opt"><input type="radio" name="q11" value="nee">NEE</label></div>
+    </div>
+
+    <!-- 12–15 -->
+    <div class="q"><div class="t">12. Word je snel boos, agressief of intimiderend in discussies?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q12" value="ja">JA</label><label class="opt"><input type="radio" name="q12" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">13. Heb je ooit geschreeuwd, vernederd of bedreigd in een ruzie?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q13" value="ja">JA</label><label class="opt"><input type="radio" name="q13" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">14. Heb je dingen kapotgemaakt of gegooid om een punt te maken?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q14" value="ja">JA</label><label class="opt"><input type="radio" name="q14" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">15. Ben je bang dat jouw boosheid kan escaleren?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q15" value="ja">JA</label><label class="opt"><input type="radio" name="q15" value="nee">NEE</label></div>
+    </div>
+
+    <!-- 16–18 -->
+    <div class="q"><div class="t">16. Heb je haar afgeraden om met bepaalde mensen om te gaan?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q16" value="ja">JA</label><label class="opt"><input type="radio" name="q16" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">17. Vind je dat familie of vrienden haar negatief beïnvloeden?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q17" value="ja">JA</label><label class="opt"><input type="radio" name="q17" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">18. Heb je geprobeerd haar contact met anderen te beperken?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q18" value="ja">JA</label><label class="opt"><input type="radio" name="q18" value="nee">NEE</label></div>
+    </div>
+
+    <!-- 19–21 -->
+    <div class="q"><div class="t">19. Heb je in het begin van de relatie snel grote stappen gezet (samenwonen, trouwen, kinderen)?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q19" value="ja">JA</label><label class="opt"><input type="radio" name="q19" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">20. Had je hierbij de behoefte haar stevig aan je te binden?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q20" value="ja">JA</label><label class="opt"><input type="radio" name="q20" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">21. Gebruik je gedeelde verplichtingen soms om haar bij je te houden?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q21" value="ja">JA</label><label class="opt"><input type="radio" name="q21" value="nee">NEE</label></div>
+    </div>
+
+    <!-- 22–24 -->
+    <div class="q"><div class="t">22. Heb je ooit gedreigd jezelf, haar of iemand anders iets aan te doen?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q22" value="ja">JA</label><label class="opt"><input type="radio" name="q22" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">23. Heb je woorden gebruikt zoals: “Als jij weggaat, dan …”?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q23" value="ja">JA</label><label class="opt"><input type="radio" name="q23" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">24. Heb je haar ooit bang gemaakt zodat zij zou doen wat jij wilde?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q24" value="ja">JA</label><label class="opt"><input type="radio" name="q24" value="nee">NEE</label></div>
+    </div>
+
+    <!-- 25–27 -->
+    <div class="q"><div class="t">25. Controleer je haar telefoon, berichten of accounts?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q25" value="ja">JA</label><label class="opt"><input type="radio" name="q25" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">26. Heb je ooit een wachtwoord gevraagd of afgedwongen?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q26" value="ja">JA</label><label class="opt"><input type="radio" name="q26" value="nee">NEE</label></div>
+    </div>
+    <div class="q"><div class="t">27. Vind je dat je het recht hebt om alles van haar te weten?</div>
+      <div class="opts"><label class="opt"><input type="radio" name="q27" value="ja">JA</label><label class="opt"><input type="radio" name="q27" value="nee">NEE</label></div>
+    </div>
+
+    <div class="stickybar">
+      <div class="btnrow">
+        <button class="btn" type="button" id="btnConclusie">Bekijk conclusie</button>
+        <a class="btn secondary" href="index.html">Terug naar start</a>
+      </div>
+      <p class="muted" style="margin:10px 2px 0">
+        Tip: als je niet alle vragen beantwoordt, worden lege antwoorden als “NEE” meegeteld.
+      </p>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  function countYes() {
+    let yes = 0;
+    for (let i = 1; i <= 27; i++) {
+      const el = document.querySelector(`input[name="q${i}"]:checked`);
+      const v = el ? el.value : "nee";
+      if (v === "ja") yes++;
     }
+    return yes;
+  }
 
-    function countYes() {
-      let yes = 0;
-      for (const id of questionIds) {
-        const checked = document.querySelector(`input[name="${id}"]:checked`);
-        if (checked && checked.value === "ja") yes++;
-      }
-      return yes;
-    }
+  document.getElementById("btnConclusie").addEventListener("click", () => {
+    const score = countYes();
+    localStorage.setItem("sts_type", "dader");
+    localStorage.setItem("sts_score", String(score));
+    window.location.href = "conclusie.html";
+  });
+</script>
 
-    document.getElementById("btnResult").addEventListener("click", () => {
-      const yes = countYes();
-      localStorage.setItem("sts_type", "dader");
-      localStorage.setItem("sts_yes", String(yes));
-      localStorage.setItem("sts_total", String(questionIds.length));
-      window.location.href = "conclusie.html";
-    });
-  </script>
 </body>
 </html>
